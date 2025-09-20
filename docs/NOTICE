@@ -1,0 +1,10 @@
+CodexRootAtlas — Licensing Notice
+
+
+- /tools, /scripts, /portfolio/app code -> MIT License (see LICENSE)
+- /portfolio/content, /labs/*/writeup.md -> CC BY-NC-SA 4.0 (see docs/LICENSE_DOCS.md)
+- /labs/*/repro, /services/client-* -> PRIVATE / All Rights Reserved (do not publish)
+
+
+If you contribute, you accept that code contributions will be licensed under MIT and
+documentation contributions under CC BY-NC-SA (unless we agree otherwise in writing).

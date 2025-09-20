@@ -144,6 +144,7 @@ temp/
 *.tmp
 *.orig
 
+
 # -------------------------
 # Repo-specific safe-keep examples (comment out if you want them tracked)
 # -------------------------
@@ -151,3 +152,14 @@ temp/
 labs/*/artifacts/
 labs/*/images/
 labs/*/captures/
+
+# ignore SSH keys
+SSH KEY
+SSH KEY.pub
+.SSH KEY
+.SSH KEY.pub
+# more general
+*.pub
+id_ed25519
+id_ed25519.pub
+

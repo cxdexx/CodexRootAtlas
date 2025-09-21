@@ -1,0 +1,1 @@
+name: semgrep-scan\non: [pull_request]\njobs:\n  semgrep:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v3\n      - name: Run Semgrep\n        uses: returntocorp/semgrep-action@v1\n        with:\n          config: p/ci\n

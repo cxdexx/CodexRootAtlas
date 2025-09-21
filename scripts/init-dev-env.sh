@@ -1,0 +1,1 @@
+#!/usr/bin/env bash\n# init-dev-env.sh - quick bootstrap\nset -e\nif ! command -v docker >/dev/null 2>&1; then\n  echo "Docker not installed. Install Docker and re-run."\n  exit 1\nfi\n./scripts/run-juice-shop.sh &\necho "Juice Shop started at http://localhost:3000 (if docker available)"\n

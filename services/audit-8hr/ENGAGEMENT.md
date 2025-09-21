@@ -1,0 +1,1 @@
+# 8-Hour Security Audit - Engagement\n\nScope:\n- Timebox: 8 hours\n- Deliverables: triage report, 1 fix (if safe), 2-min walkthrough video\n\nExclusions:\n- No social engineering\n- No Denial of Service testing\n\nPayment: $150 upon delivery\n

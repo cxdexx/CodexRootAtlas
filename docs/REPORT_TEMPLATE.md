@@ -1,0 +1,1 @@
+# Pentest Report Template\n\n## Executive summary\n\n## Scope & methodology\n\n## Findings (sanitized)\n\n### Finding 1\n- Severity:\n- Description:\n- Repro steps (sanitized):\n- Remediation:\n\n## Appendix\n- Tools used\n- Raw outputs (redacted)\n

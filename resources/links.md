@@ -1,0 +1,1 @@
+# Useful links\n- PortSwigger Web Security Academy: https://portswigger.net/web-security\n- TryHackMe: https://tryhackme.com\n- HackTheBox: https://hackthebox.com\n- OWASP Juice Shop: https://owasp.org/www-project-juice-shop/\n- Semgrep: https://semgrep.dev/

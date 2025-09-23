@@ -1,4 +1,4 @@
-# OWASP Top 10 (2021) — Detailed Dev & Lab Reference
+# OWASP Top 10 2025 — Detailed Dev & Lab Reference
 
 For each Top-10 item this file contains:
 

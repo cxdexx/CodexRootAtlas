@@ -2,6 +2,8 @@
 
  PortSwigger Web Security Academy: https://portswigger.net/web-security
 
+ SQL Injection by PortSwigerr: https://portswigger.net/web-security/sql-injection
+
  
  TryHackMe: https://tryhackme.com
  

@@ -1,9 +1,6 @@
 # Useful links
 
  PortSwigger Web Security Academy: https://portswigger.net/web-security
-
- SQL Injection by PortSwigerr: https://portswigger.net/web-security/sql-injection
-
  
  TryHackMe: https://tryhackme.com
  
@@ -15,4 +12,12 @@
 
  Subnetting By Network Chunk: https://www.youtube.com/watch?v=oZGZRtaGyG8&start=541
 
- Learned with chat gpt: https://chatgpt.com/share/691a4582-91e0-8011-8cf1-14ecfc8ab1d9
+ OSINT : https://exiftool.org/exiftool_pod.html
+        https://www.shodan.io/ 
+        https://earth.google.com/
+        https://intelbase.is/
+        https://app.osint.industries/
+        https://github.com/owasp-amass/amass
+        https://github.com/cxdexx/sherlock
+        https://www.spiderfoot.net/?utm_source=chatgpt.com
+        https://www.shodan.io/?utm_source=chatgpt.com

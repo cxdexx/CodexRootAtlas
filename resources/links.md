@@ -12,7 +12,9 @@
 
  Subnetting By Network Chunk: https://www.youtube.com/watch?v=oZGZRtaGyG8&start=541
 
- OSINT : https://exiftool.org/exiftool_pod.html
+ OSINT : 
+        
+        https://exiftool.org/exiftool_pod.html
         https://www.shodan.io/ 
         https://earth.google.com/
         https://intelbase.is/

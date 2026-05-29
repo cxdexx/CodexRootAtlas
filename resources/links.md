@@ -21,5 +21,6 @@
         https://app.osint.industries/
         https://github.com/owasp-amass/amass
         https://github.com/cxdexx/sherlock
-        https://www.spiderfoot.net/?utm_source=chatgpt.com
-        https://www.shodan.io/?utm_source=chatgpt.com
+        https://www.spiderfoot.net/
+        https://www.shodan.io/
+        AbuseIPDB, and Cisco Talos Intelligence ----for performing a reputation and location check for the IP address

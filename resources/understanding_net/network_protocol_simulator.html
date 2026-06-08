@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magic Internet Delivery Lab - Kids' Guide to Web Speed</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for fun icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;700&display=swap');
+        body {
+            font-family: 'Fredoka', sans-serif;
+        }
+        .code-font {
+            font-family: 'Fira Code', monospace;
+        }
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3b82f6;
+            border-radius: 99px;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col overflow-x-hidden selection:bg-pink-500 selection:text-white">
+
+    <!-- Playful Header -->
+    <header class="border-b-4 border-dashed border-indigo-500/30 bg-slate-900/90 backdrop-blur sticky top-0 z-50 px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-4">
+            <div class="p-3 bg-gradient-to-tr from-pink-500 to-indigo-500 text-white rounded-2xl shadow-lg shadow-indigo-500/20 animate-bounce">
+                <i class="fa-solid fa-rocket text-2xl"></i>
+            </div>
+            <div>
+                <h1 class="text-2xl font-extrabold tracking-wide bg-gradient-to-r bg-clip-text text-transparent from-yellow-300 via-pink-400 to-indigo-300">
+                    The Magic Internet Delivery Lab!
+                </h1>
+                <p class="text-xs text-slate-300 font-medium tracking-wide">A fun, interactive playground showing how web pages fly to your screen!</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-3">
+            <span class="flex h-3 w-3 relative">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+            </span>
+            <span class="text-xs font-bold tracking-wider text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-full border-2 border-emerald-500/20">LAB ONLINE</span>
+        </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="flex-1 grid grid-cols-1 xl:grid-cols-12 gap-6 p-6 max-w-7xl mx-auto w-full">
+        
+        <!-- Controls Panel (Left 4 cols) -->
+        <div class="xl:col-span-4 flex flex-col gap-6">
+            
+            <!-- Step 1: Choose Your Vehicle -->
+            <div class="bg-slate-900 border-4 border-indigo-500/20 rounded-3xl p-5 shadow-2xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-indigo-500/5 rounded-full blur-xl"></div>
+                <h2 class="text-md font-bold uppercase tracking-wider text-pink-400 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-truck-fast"></i> Step 1: Choose Your Vehicle
+                </h2>
+                <div class="flex flex-col gap-3">
+                    <!-- HTTP/1.1 -->
+                    <button id="btn-http1" class="protocol-btn group relative flex items-center justify-between p-3.5 rounded-2xl border-2 transition-all text-left bg-slate-800/40 border-slate-700/50 hover:border-slate-500">
+                        <div class="flex items-center gap-3">
+                            <span class="w-11 h-11 flex items-center justify-center rounded-xl bg-amber-500/10 text-amber-400 text-lg font-black border-2 border-amber-500/20 group-hover:scale-105 transition-all">✉️</span>
+                            <div>
+                                <span class="block text-sm font-bold text-slate-200">The Slow Postcard</span>
+                                <span class="block text-[11px] text-slate-400">HTTP/1.1 • No Lock Box • One-by-One</span>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-circle text-xs text-slate-600 status-dot"></i>
+                    </button>
+
+                    <!-- HTTPS (HTTP/2 + TLS) -->
+                    <button id="btn-https" class="protocol-btn group relative flex items-center justify-between p-3.5 rounded-2xl border-2 transition-all text-left bg-slate-800/40 border-slate-700/50 hover:border-slate-500">
+                        <div class="flex items-center gap-3">
+                            <span class="w-11 h-11 flex items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-400 text-lg font-black border-2 border-cyan-500/20 group-hover:scale-105 transition-all">🚂</span>
+                            <div>
+                                <span class="block text-sm font-bold text-slate-200">The Locked Toy Train</span>
+                                <span class="block text-[11px] text-slate-400">HTTPS • Secure Lock • All Connected</span>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-circle text-xs text-slate-600 status-dot"></i>
+                    </button>
+
+                    <!-- HTTP/3 (QUIC) -->
+                    <button id="btn-http3" class="protocol-btn group relative flex items-center justify-between p-3.5 rounded-2xl border-2 transition-all text-left bg-slate-800/40 border-slate-700/50 hover:border-slate-500">
+                        <div class="flex items-center gap-3">
+                            <span class="w-11 h-11 flex items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400 text-lg font-black border-2 border-emerald-500/20 group-hover:scale-105 transition-all">🛸</span>
+                            <div>
+                                <span class="block text-sm font-bold text-slate-200">The Magic Drone Squad</span>
+                                <span class="block text-[11px] text-slate-400">HTTP/3 • Built-in Lock • Super Fast</span>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-circle text-xs text-slate-600 status-dot"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 2: Make the Weather Harder -->
+            <div class="bg-slate-900 border-4 border-indigo-500/20 rounded-3xl p-5 shadow-2xl">
+                <h2 class="text-md font-bold uppercase tracking-wider text-pink-400 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-cloud-showers-water"></i> Step 2: Change the Weather
+                </h2>
+                <div class="flex flex-col gap-4">
+                    <!-- Slippery Wind (Packet Loss) -->
+                    <div>
+                        <div class="flex justify-between text-xs mb-1.5 font-bold">
+                            <span class="text-slate-300">Slippery Wind (Chance of Dropping Packages)</span>
+                            <span id="label-loss" class="text-purple-400 code-font">0%</span>
+                        </div>
+                        <input type="range" id="slider-loss" min="0" max="40" step="5" value="0" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-purple-500">
+                        <span class="text-[10px] text-slate-400 mt-1 block">Higher wind represents **packet loss** where bits of data get dropped in transit!</span>
+                    </div>
+
+                    <!-- Distance / Snail Speed (Latency) -->
+                    <div>
+                        <div class="flex justify-between text-xs mb-1.5 font-bold">
+                            <span class="text-slate-300">Snail Speed (How far away is the toy store?)</span>
+                            <span id="label-latency" class="text-purple-400 code-font">100 ms</span>
+                        </div>
+                        <input type="range" id="slider-latency" min="50" max="350" step="25" value="100" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-purple-500">
+                        <span class="text-[10px] text-slate-400 mt-1 block">This represents **Network Latency** ($RTT$). Higher ping delays handshakes!</span>
+                    </div>
+
+                    <!-- Secret Portal Selector (Ports) -->
+                    <div class="border-t border-slate-800/80 pt-4 flex items-center justify-between">
+                        <div>
+                            <span class="block text-xs font-bold text-slate-300">Secret Delivery Door</span>
+                            <span class="block text-[10px] text-slate-500">Change the system port allocation</span>
+                        </div>
+                        <select id="select-port" class="bg-slate-800 border-2 border-slate-700 text-xs rounded-xl px-2.5 py-1.5 text-slate-300 font-bold focus:outline-none focus:border-indigo-500">
+                            <option value="standard">Standard Doors (80 / 443)</option>
+                            <option value="alt">Hidden Back Doors (8080 / 8443)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Simulation Controls -->
+            <div class="bg-slate-900 border-4 border-indigo-500/20 rounded-3xl p-5 shadow-2xl flex flex-col gap-3">
+                <button id="btn-trigger" class="w-full py-3 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 active:scale-95 transition-all text-white font-bold text-md rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30">
+                    <i class="fa-solid fa-gamepad"></i> Send the Delivery Request!
+                </button>
+                <div class="grid grid-cols-2 gap-2">
+                    <button id="btn-loss-event" class="py-2.5 bg-red-950/40 hover:bg-red-900/30 border-2 border-red-500/20 text-red-400 text-xs font-bold rounded-xl flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-wind"></i> Drop a Package!
+                    </button>
+                    <button id="btn-reset" class="py-2.5 bg-slate-800 hover:bg-slate-700 border-2 border-slate-700 text-slate-300 text-xs font-bold rounded-xl flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-rotate-left"></i> Start Over
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Canvas Simulation Screen (Right 8 cols) -->
+        <div class="xl:col-span-8 flex flex-col gap-6">
+            
+            <!-- Canvas Board -->
+            <div class="bg-slate-900 border-4 border-indigo-500/20 rounded-3xl shadow-2xl flex flex-col overflow-hidden">
+                <div class="px-5 py-3.5 border-b-2 border-dashed border-slate-800 bg-slate-950/40 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <span class="flex h-2.5 w-2.5 rounded-full bg-indigo-500"></span>
+                        <span class="text-xs font-bold text-slate-300 tracking-wider uppercase">Magic Delivery Window</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-xs font-bold">
+                        <span class="text-slate-400">Game State:</span>
+                        <span id="canvas-status-badge" class="font-bold text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/15">READY TO START</span>
+                    </div>
+                </div>
+
+                <!-- Simulation Canvas -->
+                <div class="relative w-full aspect-[16/9] bg-slate-950">
+                    <canvas id="networkCanvas" class="absolute inset-0 w-full h-full"></canvas>
+                </div>
+
+                <!-- Kid-Friendly Map Legend -->
+                <div class="px-5 py-3 bg-slate-900/50 border-t-2 border-dashed border-slate-800/80 flex flex-wrap gap-4 text-xs font-bold justify-center sm:justify-start">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3.5 h-3.5 rounded-full bg-amber-500 inline-block border border-white"></span>
+                        <span class="text-slate-400">Saying "Hello" (TCP Handshake)</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-3.5 h-3.5 rounded-full bg-purple-500 inline-block border border-white"></span>
+                        <span class="text-slate-400">Secret Decoder Key (TLS Encryption)</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-3.5 h-3.5 rounded-full bg-emerald-500 inline-block border border-white"></span>
+                        <span class="text-slate-400">Magic Flying Spell (QUIC Protocol)</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-3.5 h-3.5 rounded-full bg-cyan-400 inline-block border border-white"></span>
+                        <span class="text-slate-400">Your Toys (HTTP Data Packets)</span>
+                    </div>
+                    <div class="flex items-center gap-2 ml-auto">
+                        <i class="fa-solid fa-face-frown text-red-500 text-sm animate-pulse"></i>
+                        <span class="text-red-400">Oh No! Dropped Packet</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scoreboard & Storybook Explainer -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- Telemetry Metrics (The Scoreboard) -->
+                <div class="bg-slate-900 border-4 border-indigo-500/20 rounded-3xl p-5 shadow-2xl">
+                    <h2 class="text-md font-bold uppercase tracking-wider text-pink-400 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-ranking-star"></i> Magic Scoreboard
+                    </h2>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-slate-950 border-2 border-slate-800/80 p-3.5 rounded-2xl text-center">
+                            <span class="block text-[10px] text-slate-400 font-bold uppercase tracking-wider">Connection Setup ($RTT$)</span>
+                            <span id="metric-conn-time" class="block text-2xl font-extrabold code-font text-white mt-1">0 <span class="text-xs font-bold text-slate-400">ms</span></span>
+                        </div>
+                        <div class="bg-slate-950 border-2 border-slate-800/80 p-3.5 rounded-2xl text-center">
+                            <span class="block text-[10px] text-slate-400 font-bold uppercase tracking-wider">Total Delivery Time</span>
+                            <span id="metric-load-time" class="block text-2xl font-extrabold code-font text-white mt-1">0 <span class="text-xs font-bold text-slate-400">ms</span></span>
+                        </div>
+                        <div class="bg-slate-950 border-2 border-slate-800/80 p-3.5 rounded-2xl text-center">
+                            <span class="block text-[10px] text-slate-400 font-bold uppercase tracking-wider">Back & Forth Trips ($RTT$)</span>
+                            <span id="metric-rtt" class="block text-2xl font-extrabold code-font text-white mt-1">0</span>
+                        </div>
+                        <div class="bg-slate-950 border-2 border-slate-800/80 p-3.5 rounded-2xl text-center">
+                            <span class="block text-[10px] text-slate-400 font-bold uppercase tracking-wider">HOL Block Stalls (Jams)</span>
+                            <span id="metric-stalls" class="block text-2xl font-extrabold code-font text-red-400 mt-1">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Storybook Explainer (Updates dynamically with friendly stories) -->
+                <div class="bg-slate-900 border-4 border-indigo-500/20 rounded-3xl p-5 shadow-2xl flex flex-col justify-between">
+                    <div>
+                        <h2 class="text-md font-bold uppercase tracking-wider text-pink-400 mb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-book-open"></i> Storybook & Tech Explainer
+                        </h2>
+                        <div class="border-b-2 border-dashed border-slate-800 pb-2.5 mb-2.5 flex justify-between items-center">
+                            <span id="explainer-title" class="text-sm font-bold text-indigo-400">Choose a vehicle first!</span>
+                            <span id="explainer-port" class="text-xs font-bold px-2.5 py-1 rounded-full bg-slate-850 border border-slate-700 text-slate-300 code-font">PORT --</span>
+                        </div>
+                        <p id="explainer-body" class="text-xs text-slate-300 leading-relaxed font-medium">
+                            Choose one of the three transport vehicles on the left, adjust the wind controls, and hit the **"Send the Delivery Request!"** button to see the magic happen!
+                        </p>
+                    </div>
+                    <div class="border-t border-slate-800/80 pt-3 mt-3 flex items-center gap-2 text-[10px] text-slate-500 font-bold">
+                        <i class="fa-solid fa-circle-question text-slate-400 text-xs"></i>
+                        <span>See how different vehicles react when they hit a windy patch!</span>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Kids' Explainer Section -->
+    <footer class="border-t-4 border-dashed border-slate-800 bg-slate-900/40 p-6 mt-8">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 text-xs text-slate-300 font-medium leading-relaxed">
+            <div class="bg-slate-900/40 p-4 rounded-2xl border-2 border-indigo-500/10">
+                <h3 class="font-bold text-slate-100 mb-2 uppercase text-xs text-yellow-300 flex items-center gap-1.5">
+                    <i class="fa-solid fa-handshake-simple"></i> 1. The Magic Handshake ($RTT$)
+                </h3>
+                <p>
+                    Before you get your toys, your computer and the store server have to say "Hello" to each other. Under old systems, they had to go back and forth 3 times just to agree it was safe to talk! With modern HTTP/3, they do the connection handshake and secret locking setup in just **one single trip**!
+                </p>
+            </div>
+            <div class="bg-slate-900/40 p-4 rounded-2xl border-2 border-indigo-500/10">
+                <h3 class="font-bold text-slate-100 mb-2 uppercase text-xs text-yellow-300 flex items-center gap-1.5">
+                    <i class="fa-solid fa-traffic-light"></i> 2. The Train Traffic Jam (HoL Blocking)
+                </h3>
+                <p>
+                    Imagine your web files are train cars linked together. If one train car hits a bump and falls off the track (Packet Loss), **every single toy** on that train has to stop and wait on the track until the broken car is rescued. With QUIC, we use independent flying drones instead, so one drone crashing doesn't stop the others!
+                </p>
+            </div>
+            <div class="bg-slate-900/40 p-4 rounded-2xl border-2 border-indigo-500/10">
+                <h3 class="font-bold text-slate-100 mb-2 uppercase text-xs text-yellow-300 flex items-center gap-1.5">
+                    <i class="fa-solid fa-door-open"></i> 3. Secret Portal Doors (Ports)
+                </h3>
+                <p>
+                    Web servers are like huge castle walls with thousands of secret delivery doors. Standard internet web pages always go through Door **80** (open) or Door **443** (securely locked). When system builders want to hide or work on things privately, they use back doors like **8080** or **8443**.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Custom Kid-Friendly Report Card Pop-up Modal -->
+    <div id="summary-modal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-slate-900 border-4 border-indigo-500 rounded-3xl p-6 md:p-8 max-w-lg w-full shadow-2xl relative overflow-hidden transform scale-95 transition-transform duration-300" id="modal-container">
+            <!-- Sparkle Decorations -->
+            <div class="absolute -top-10 -right-10 w-28 h-28 bg-indigo-500/20 rounded-full blur-xl"></div>
+            <div class="absolute -bottom-10 -left-10 w-28 h-28 bg-pink-500/20 rounded-full blur-xl"></div>
+            
+            <!-- Badge Icon Header -->
+            <div class="flex flex-col items-center text-center mb-6">
+                <div id="modal-badge-container" class="w-20 h-20 rounded-2xl flex items-center justify-center text-4xl shadow-lg border-2 mb-4 animate-bounce">
+                    🛸
+                </div>
+                <h3 id="modal-badge-title" class="text-xs font-bold tracking-widest text-pink-400 uppercase">DRONE COMMANDER REPORT</h3>
+                <h2 id="modal-headline" class="text-2xl font-extrabold text-white mt-1">Delivery Successful!</h2>
+            </div>
+
+            <!-- Dynamic Kid-Friendly Explanation -->
+            <div class="bg-slate-950/60 border border-slate-800 rounded-2xl p-4 mb-6">
+                <p id="modal-story-text" class="text-sm text-slate-200 leading-relaxed font-medium">
+                    Your toys have arrived! Let's see how our delivery squad handled the elements...
+                </p>
+                <div class="grid grid-cols-2 gap-2 mt-4 border-t border-slate-800/80 pt-4">
+                    <div class="text-center">
+                        <span class="block text-[10px] text-slate-400 font-bold uppercase">Total Time</span>
+                        <span id="modal-stat-time" class="text-lg font-black text-indigo-400 code-font">0 ms</span>
+                    </div>
+                    <div class="text-center">
+                        <span class="block text-[10px] text-slate-400 font-bold uppercase">Traffic Jams</span>
+                        <span id="modal-stat-jams" class="text-lg font-black text-red-400 code-font">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col gap-2">
+                <button id="btn-close-modal" class="w-full py-3 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 active:scale-95 transition-all text-white font-bold rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30">
+                    <i class="fa-solid fa-rotate-left"></i> Adjust Settings & Try Again!
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive Logic Script -->
+    <script>
+        // Setup state variables
+        let selectedProtocol = 'https'; // default protocol
+        let selectedPortMode = 'standard'; // standard or alt
+        let isSimulating = false;
+        let animationFrameId = null;
+        let simulationStartTime = null;
+
+        // Configuration values based on UI
+        let packetLossRate = 0;
+        let baseLatency = 100; // ms
+
+        // Telemetry metrics
+        let totalLoadTime = 0;
+        let connectionTime = 0;
+        let totalRTTs = 0;
+        let holStalls = 0;
+
+        // DOM elements
+        const canvas = document.getElementById('networkCanvas');
+        const ctx = canvas.getContext('2d');
+        const sliderLoss = document.getElementById('slider-loss');
+        const sliderLatency = document.getElementById('slider-latency');
+        const labelLoss = document.getElementById('label-loss');
+        const labelLatency = document.getElementById('label-latency');
+        const selectPort = document.getElementById('select-port');
+        const btnTrigger = document.getElementById('btn-trigger');
+        const btnLossEvent = document.getElementById('btn-loss-event');
+        const btnReset = document.getElementById('btn-reset');
+        const badgeStatus = document.getElementById('canvas-status-badge');
+
+        // Metrics output elements
+        const outConnTime = document.getElementById('metric-conn-time');
+        const outLoadTime = document.getElementById('metric-load-time');
+        const outRTT = document.getElementById('metric-rtt');
+        const outStalls = document.getElementById('metric-stalls');
+
+        // Modal DOM Elements
+        const summaryModal = document.getElementById('summary-modal');
+        const modalContainer = document.getElementById('modal-container');
+        const modalBadgeContainer = document.getElementById('modal-badge-container');
+        const modalBadgeTitle = document.getElementById('modal-badge-title');
+        const modalHeadline = document.getElementById('modal-headline');
+        const modalStoryText = document.getElementById('modal-story-text');
+        const modalStatTime = document.getElementById('modal-stat-time');
+        const modalStatJams = document.getElementById('modal-stat-jams');
+        const btnCloseModal = document.getElementById('btn-close-modal');
+
+        // Explainer output elements
+        const explainerTitle = document.getElementById('explainer-title');
+        const explainerPort = document.getElementById('explainer-port');
+        const explainerBody = document.getElementById('explainer-body');
+
+        // Canvas entities lists
+        let packets = [];
+        let networkEvents = [];
+        let streams = []; // Used to track data blocks for different files
+
+        // Resource targets to load (representing components of a web page)
+        const webPageResources = [
+            { id: 1, type: '🧱 Toy Wall (HTML)', size: 120, color: '#38bdf8' }, // Cyan
+            { id: 2, type: '🎨 Toy Paint (CSS)', size: 150, color: '#a855f7' }, // Purple
+            { id: 3, type: '🔋 Toy Motor (JS)', size: 220, color: '#e11d48' }, // Rose
+            { id: 4, type: '🧸 Plush Bear (Image)', size: 300, color: '#10b981' } // Emerald
+        ];
+
+        // Connection State Enumeration
+        const CONN_STATES = {
+            IDLE: 'IDLE',
+            TCP_SYN: 'Calling Server: "Hello!"',
+            TCP_ACK: 'Server Replying: "Hi!"',
+            TLS_HELLO: 'Making Secure Box...',
+            TLS_EXCHANGE: 'Locking up the Box!',
+            QUIC_INIT: 'Launching Super Drones!',
+            DATA_TRANSFER: 'Delivering Toys...',
+            RECOVERY: 'Rescuing Lost Toys...',
+            COMPLETE: 'Toys Opened!'
+        };
+
+        let currentConnState = CONN_STATES.IDLE;
+
+        // Set responsive canvas sizes
+        function resizeCanvas() {
+            const rect = canvas.parentNode.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Kid-friendly color scheme
+        const colors = {
+            slate900: '#0f172a',
+            slate800: '#1e293b',
+            indigo500: '#6366f1',
+            indigo400: '#818cf8',
+            emerald400: '#34d399',
+            emerald500: '#10b981',
+            amber400: '#fbbf24',
+            amber500: '#f59e0b',
+            red400: '#f87171',
+            red500: '#ef4444',
+            cyan400: '#22d3ee',
+            slate400: '#94a3b8'
+        };
+
+        // Protocol Selection handlers
+        function setupProtocolButtons() {
+            const buttons = {
+                'http1': document.getElementById('btn-http1'),
+                'https': document.getElementById('btn-https'),
+                'http3': document.getElementById('btn-http3')
+            };
+
+            function select(protocol) {
+                selectedProtocol = protocol;
+                Object.keys(buttons).forEach(key => {
+                    const btn = buttons[key];
+                    const dot = btn.querySelector('.status-dot');
+                    if (key === protocol) {
+                        btn.className = "protocol-btn group relative flex items-center justify-between p-3.5 rounded-2xl border-2 transition-all text-left bg-indigo-950/20 border-indigo-500/80 shadow-indigo-500/10 shadow-lg";
+                        dot.className = "fa-solid fa-circle-dot text-xs text-indigo-400 status-dot";
+                    } else {
+                        btn.className = "protocol-btn group relative flex items-center justify-between p-3.5 rounded-2xl border-2 transition-all text-left bg-slate-800/40 border-slate-700/50 hover:border-slate-500";
+                        dot.className = "fa-solid fa-circle text-xs text-slate-600 status-dot";
+                    }
+                });
+                updateExplainerTexts();
+                resetSimulation();
+            }
+
+            buttons.http1.addEventListener('click', () => select('http1'));
+            buttons.https.addEventListener('click', () => select('https'));
+            buttons.http3.addEventListener('click', () => select('http3'));
+
+            // Initial selection
+            select('https');
+        }
+
+        // Dynamically change descriptive texts to kid friendly stories with clear real-world mapping translations
+        function updateExplainerTexts() {
+            const portText = selectedPortMode === 'standard' 
+                ? (selectedProtocol === 'http1' ? 'DOOR 80' : 'DOOR 443')
+                : (selectedProtocol === 'http1' ? 'DOOR 8080' : 'DOOR 8443');
+
+            explainerPort.textContent = portText;
+
+            if (selectedProtocol === 'http1') {
+                explainerTitle.textContent = "✉️ HTTP/1.1 (The Slow Postcard)";
+                explainerBody.innerHTML = `
+                    <div class="space-y-2">
+                        <p><span class="font-bold text-yellow-300">🎈 The Analogy:</span> Writing plain paper postcards and sending them one-by-one.</p>
+                        <p><span class="font-bold text-indigo-400">⚙️ The Real World (HTTP/1.1):</span> This is the original way web browsers requested data using **plain-text TCP** over Port 80.</p>
+                        <p><span class="font-bold text-pink-400">⚠️ Why it's slow/insecure:</span> There is no secure lock box (**No Encryption/TLS**), meaning anyone on your network can read your data! Also, it lacks multiplexing—you can only request **one file at a time**. If one gets lost, the whole web connection freezes to wait for a re-send!</p>
+                    </div>
+                `;
+            } else if (selectedProtocol === 'https') {
+                explainerTitle.textContent = "🚂 HTTPS (The Locked Toy Train)";
+                explainerBody.innerHTML = `
+                    <div class="space-y-2">
+                        <p><span class="font-bold text-yellow-300">🎈 The Analogy:</span> Your toys are put in secure locked boxes, but linked together on a single toy train track.</p>
+                        <p><span class="font-bold text-indigo-400">⚙️ The Real World (HTTP/2 over TLS/TCP):</span> This is modern HTTPS running over **TCP** with **TLS 1.3 Encryption** over Port 443.</p>
+                        <p><span class="font-bold text-pink-400">⚠️ The Traffic Jam (TCP Head-of-Line Blocking):</span> While we can request multiple files simultaneously (multiplexing), TCP treats all data streams as a single linked chain of packets. If a single packet gets lost, the browser's operating system halts the rendering of **all** files until the lost bit is retransmitted!</p>
+                    </div>
+                `;
+            } else if (selectedProtocol === 'http3') {
+                explainerTitle.textContent = "🛸 HTTP/3 (The Magic Drone Squad)";
+                explainerBody.innerHTML = `
+                    <div class="space-y-2">
+                        <p><span class="font-bold text-yellow-300">🎈 The Analogy:</span> Every toy is flown independently by its own magic superhero drone.</p>
+                        <p><span class="font-bold text-indigo-400">⚙️ The Real World (HTTP/3 over QUIC/UDP):</span> This is the next generation of web traffic running over a new transport protocol called **QUIC**, which sits on top of **UDP** (instead of TCP).</p>
+                        <p><span class="font-bold text-pink-400">⚡ Why it's ultra-fast:</span> QUIC combines the network handshake and the secure TLS 1.3 lock setup into a **single trip ($1\text{-RTT}$)**! More importantly, it completely eliminates Head-of-Line blocking. Since UDP streams are entirely independent, if one drone (packet) crashes, the others keep flying straight to your screen without waiting!</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Handle parameters sliders
+        sliderLoss.addEventListener('input', (e) => {
+            packetLossRate = parseInt(e.target.value);
+            labelLoss.textContent = packetLossRate + '%';
+        });
+
+        sliderLatency.addEventListener('input', (e) => {
+            baseLatency = parseInt(e.target.value);
+            labelLatency.textContent = baseLatency + ' ms';
+        });
+
+        selectPort.addEventListener('change', (e) => {
+            selectedPortMode = e.target.value;
+            updateExplainerTexts();
+            resetSimulation();
+        });
+
+        // Trigger action click
+        btnTrigger.addEventListener('click', () => {
+            startSimulation();
+        });
+
+        // Force connection drops
+        btnLossEvent.addEventListener('click', () => {
+            if (!isSimulating) return;
+            // Forcefully drop any currently flying data packet
+            let targeted = packets.find(p => p.direction === 'to-server' && !p.isDropped && p.type === 'data');
+            if (targeted) {
+                targeted.drop();
+            }
+        });
+
+        btnReset.addEventListener('click', () => {
+            resetSimulation();
+        });
+
+        // Dismiss Modal Event Handler
+        btnCloseModal.addEventListener('click', () => {
+            summaryModal.classList.add('opacity-0');
+            modalContainer.classList.add('scale-95');
+            setTimeout(() => {
+                summaryModal.classList.add('hidden');
+            }, 300);
+            resetSimulation();
+        });
+
+        // Entity Models
+        class Packet {
+            constructor(startX, startY, endX, endY, type, payload = null, streamId = null) {
+                this.x = startX;
+                this.y = startY;
+                this.startX = startX;
+                this.startY = startY;
+                this.endX = endX;
+                this.endY = endY;
+                this.type = type; // 'tcp', 'tls', 'quic', 'data', 'ack'
+                this.payload = payload;
+                this.streamId = streamId; // For HTTP/3 stream classification
+                this.progress = 0;
+                
+                // Speed is inversely proportional to selected latency
+                const travelTimeInFrames = (baseLatency / 1000) * 60; // 60fps assumption
+                this.speed = 1 / travelTimeInFrames;
+
+                this.isDropped = false;
+                this.dropPosition = 0.4 + Math.random() * 0.2; // Drop halfway across path
+                this.color = this.assignColor();
+                this.pulseTimer = 0;
+            }
+
+            assignColor() {
+                switch (this.type) {
+                    case 'tcp': return colors.amber400;
+                    case 'tls': return '#d946ef'; // Purple-pink
+                    case 'quic': return colors.emerald400;
+                    case 'data': return this.payload ? this.payload.color : colors.cyan400;
+                    case 'ack': return '#64748b'; // Slate gray
+                    default: return colors.indigo400;
+                }
+            }
+
+            update() {
+                this.progress += this.speed;
+                this.pulseTimer += 0.15;
+
+                // Check for random packet loss if applicable
+                if (!this.isDropped && packetLossRate > 0 && this.type !== 'ack' && this.progress >= this.dropPosition && this.progress < 0.9) {
+                    // Random evaluation
+                    const roll = Math.random() * 100;
+                    if (roll < packetLossRate) {
+                        this.drop();
+                    }
+                }
+
+                if (this.progress > 1) this.progress = 1;
+
+                this.x = this.startX + (this.endX - this.startX) * this.progress;
+                this.y = this.startY + (this.endY - this.startY) * this.progress;
+            }
+
+            drop() {
+                this.isDropped = true;
+                createExplosion(this.x, this.y, colors.red500);
+                holStalls++;
+                outStalls.textContent = holStalls;
+                networkEvents.push({
+                    text: `Dropped ${this.type.toUpperCase()} Packet! Triggering Timeout/Retransmission.`,
+                    color: colors.red400,
+                    time: Date.now()
+                });
+            }
+
+            draw() {
+                ctx.save();
+                
+                if (this.isDropped) {
+                    // Draw red sad face or drop indicator
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, 10, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(239, 68, 68, 0.2)';
+                    ctx.fill();
+                    ctx.strokeStyle = colors.red500;
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+
+                    // Tiny crying eye slashes
+                    ctx.beginPath();
+                    ctx.moveTo(this.x - 4, this.y - 4);
+                    ctx.lineTo(this.x - 1, this.y - 1);
+                    ctx.moveTo(this.x + 4, this.y - 4);
+                    ctx.lineTo(this.x + 1, this.y - 1);
+                    // Frown
+                    ctx.arc(this.x, this.y + 3, 3, Math.PI, 0, false);
+                    ctx.strokeStyle = colors.red500;
+                    ctx.stroke();
+                } else {
+                    // Normal packet drawing
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, 9, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    ctx.fill();
+                    
+                    // Outer structural neon ring
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+
+                    // Subtle indicator glow
+                    ctx.shadowColor = this.color;
+                    ctx.shadowBlur = 10;
+
+                    // Write labels inside large data blocks
+                    if (this.type === 'data' && this.payload) {
+                        ctx.fillStyle = '#0f172a';
+                        ctx.font = 'bold 9px Fredoka';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText(this.payload.id, this.x, this.y);
+                    }
+                }
+                ctx.restore();
+            }
+        }
+
+        // Visual Explosion effect on packet drops
+        let particles = [];
+        function createExplosion(x, y, color) {
+            for (let i = 0; i < 15; i++) {
+                particles.push({
+                    x: x,
+                    y: y,
+                    vx: (Math.random() - 0.5) * 8,
+                    vy: (Math.random() - 0.5) * 8,
+                    radius: Math.random() * 4 + 1.5,
+                    color: color,
+                    alpha: 1,
+                    decay: Math.random() * 0.04 + 0.02
+                });
+            }
+        }
+
+        function updateAndDrawParticles() {
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.alpha -= p.decay;
+
+                if (p.alpha <= 0) {
+                    particles.splice(i, 1);
+                    continue;
+                }
+
+                ctx.save();
+                ctx.globalAlpha = p.alpha;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = p.color;
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        // Reset all simulation arrays
+        function resetSimulation() {
+            isSimulating = false;
+            cancelAnimationFrame(animationFrameId);
+            packets = [];
+            particles = [];
+            networkEvents = [];
+            streams = [];
+            totalLoadTime = 0;
+            connectionTime = 0;
+            totalRTTs = 0;
+            holStalls = 0;
+
+            outConnTime.innerHTML = '0 <span class="text-xs font-bold text-slate-400">ms</span>';
+            outLoadTime.innerHTML = '0 <span class="text-xs font-bold text-slate-400">ms</span>';
+            outRTT.textContent = '0';
+            outStalls.textContent = '0';
+
+            currentConnState = CONN_STATES.IDLE;
+            badgeStatus.textContent = "READY TO START";
+            badgeStatus.className = "font-bold text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/15";
+
+            // Render static preview once reset
+            drawStaticNodes();
+        }
+
+        // Setup clean graphics of nodes before simulation starts
+        function drawStaticNodes() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const midY = canvas.height / 2;
+            const nodeRadius = 40;
+
+            // Draw clean subtle grid background
+            ctx.strokeStyle = 'rgba(30, 41, 59, 0.4)';
+            ctx.lineWidth = 1;
+            const gridSize = 40;
+            for (let x = 0; x < canvas.width; x += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+            for (let y = 0; y < canvas.height; y += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+
+            // Draw Connection Path Line
+            ctx.beginPath();
+            ctx.moveTo(110, midY);
+            ctx.lineTo(canvas.width - 110, midY);
+            ctx.strokeStyle = 'rgba(71, 85, 105, 0.3)';
+            ctx.lineWidth = 4;
+            ctx.setLineDash([8, 8]);
+            ctx.stroke();
+            ctx.setLineDash([]); // reset
+
+            // 1. Draw CLIENT Node (Your Computer on Left)
+            ctx.save();
+            ctx.shadowColor = colors.indigo500;
+            ctx.shadowBlur = 15;
+            ctx.beginPath();
+            ctx.arc(110, midY, nodeRadius, 0, Math.PI * 2);
+            ctx.fillStyle = '#1e1b4b'; // Deep Indigo
+            ctx.fill();
+            ctx.strokeStyle = colors.indigo500;
+            ctx.lineWidth = 4;
+            ctx.stroke();
+            ctx.restore();
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 11px Fredoka';
+            ctx.textAlign = 'center';
+            ctx.fillText('💻 YOUR HOME', 110, midY - 2);
+            ctx.fillStyle = colors.indigo400;
+            ctx.font = 'bold 9px Fira Code';
+            ctx.fillText('192.168.1.81', 110, midY + 12);
+
+            // 2. Draw SERVER Node (Toy Factory on Right)
+            ctx.save();
+            ctx.shadowColor = colors.emerald500;
+            ctx.shadowBlur = 15;
+            ctx.beginPath();
+            ctx.arc(canvas.width - 110, midY, nodeRadius, 0, Math.PI * 2);
+            ctx.fillStyle = '#064e3b'; // Deep Emerald
+            ctx.fill();
+            ctx.strokeStyle = colors.emerald500;
+            ctx.lineWidth = 4;
+            ctx.stroke();
+            ctx.restore();
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 11px Fredoka';
+            ctx.textAlign = 'center';
+            ctx.fillText('🏭 TOY STORE', canvas.width - 110, midY - 2);
+            ctx.fillStyle = colors.emerald400;
+            ctx.font = 'bold 9px Fira Code';
+            
+            // Render correct port on server visual
+            const portText = selectedPortMode === 'standard' 
+                ? (selectedProtocol === 'http1' ? 'Door 80' : 'Door 443')
+                : (selectedProtocol === 'http1' ? 'Door 8080' : 'Door 8443');
+            ctx.fillText(portText, canvas.width - 110, midY + 12);
+        }
+
+        // Initialize Simulation Loop
+        function startSimulation() {
+            resetSimulation();
+            isSimulating = true;
+            simulationStartTime = Date.now();
+            badgeStatus.textContent = "SAYING HELLO...";
+            badgeStatus.className = "font-bold text-indigo-400 bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-500/15";
+
+            // Initialize streams structure
+            webPageResources.forEach(res => {
+                streams.push({
+                    resource: res,
+                    bytesLoaded: 0,
+                    size: res.size,
+                    completed: false,
+                    isStalled: false
+                });
+            });
+
+            // Start Handshake state machine depending on selected protocol
+            initiateNextHandshakeStep();
+            
+            // Fire animation frame loop
+            runSimulationLoop();
+        }
+
+        // Logic routing for the handshakes
+        function initiateNextHandshakeStep() {
+            const midY = canvas.height / 2;
+            const startX = 110;
+            const endX = canvas.width - 110;
+
+            if (selectedProtocol === 'http1') {
+                // HTTP/1.1 (TCP Plain Text only, no TLS layer)
+                if (currentConnState === CONN_STATES.IDLE) {
+                    currentConnState = CONN_STATES.TCP_SYN;
+                    packets.push(new Packet(startX, midY, endX, midY, 'tcp', 'SYN'));
+                    totalRTTs++;
+                    outRTT.textContent = totalRTTs;
+                } else if (currentConnState === CONN_STATES.TCP_SYN) {
+                    currentConnState = CONN_STATES.TCP_ACK;
+                    packets.push(new Packet(endX, midY, startX, midY, 'tcp', 'SYN-ACK'));
+                    totalRTTs++;
+                    outRTT.textContent = totalRTTs;
+                } else if (currentConnState === CONN_STATES.TCP_ACK) {
+                    // Send final TCP ACK and immediately transition to DATA payload mapping
+                    packets.push(new Packet(startX, midY, endX, midY, 'tcp', 'ACK'));
+                    connectionTime = baseLatency * 1.5; // Theoretical time
+                    outConnTime.innerHTML = `${Math.round(connectionTime)} <span class="text-xs font-bold text-slate-400">ms</span>`;
+                    
+                    setTimeout(() => {
+                        currentConnState = CONN_STATES.DATA_TRANSFER;
+                        badgeStatus.textContent = "DELIVERING TOYS...";
+                        badgeStatus.className = "font-bold text-cyan-400 bg-cyan-500/10 px-3 py-1 rounded-full border border-cyan-500/15";
+                        triggerResourceDownload();
+                    }, baseLatency / 2);
+                }
+
+            } else if (selectedProtocol === 'https') {
+                // HTTPS (TCP + TLS 1.3 Stack)
+                if (currentConnState === CONN_STATES.IDLE) {
+                    currentConnState = CONN_STATES.TCP_SYN;
+                    packets.push(new Packet(startX, midY, endX, midY, 'tcp', 'SYN'));
+                    totalRTTs++;
+                    outRTT.textContent = totalRTTs;
+                } else if (currentConnState === CONN_STATES.TCP_SYN) {
+                    currentConnState = CONN_STATES.TCP_ACK;
+                    packets.push(new Packet(endX, midY, startX, midY, 'tcp', 'SYN-ACK'));
+                    totalRTTs++;
+                    outRTT.textContent = totalRTTs;
+                } else if (currentConnState === CONN_STATES.TCP_ACK) {
+                    currentConnState = CONN_STATES.TLS_HELLO;
+                    packets.push(new Packet(startX, midY, endX, midY, 'tcp', 'ACK'));
+                    totalRTTs++;
+                    outRTT.textContent = totalRTTs;
+                } else if (currentConnState === CONN_STATES.TLS_HELLO) {
+                    currentConnState = CONN_STATES.TLS_EXCHANGE;
+                    // Trigger TLS 1.3 handshakes (Client Hello)
+                    packets.push(new Packet(startX, midY, endX, midY, 'tls', 'Client Hello'));
+                } else if (currentConnState === CONN_STATES.TLS_EXCHANGE) {
+                    // TLS Keys Exchange complete
+                    packets.push(new Packet(endX, midY, startX, midY, 'tls', 'Server Hello / Keys'));
+                    connectionTime = baseLatency * 2.5; // 2.5 RTT approximation
+                    outConnTime.innerHTML = `${Math.round(connectionTime)} <span class="text-xs font-bold text-slate-400">ms</span>`;
+                    
+                    setTimeout(() => {
+                        currentConnState = CONN_STATES.DATA_TRANSFER;
+                        badgeStatus.textContent = "DELIVERING TOYS...";
+                        badgeStatus.className = "font-bold text-cyan-400 bg-cyan-500/10 px-3 py-1 rounded-full border border-cyan-500/15";
+                        triggerResourceDownload();
+                    }, baseLatency / 2);
+                }
+
+            } else if (selectedProtocol === 'http3') {
+                // HTTP/3 (QUIC combining Connection and Crypto handshakes)
+                if (currentConnState === CONN_STATES.IDLE) {
+                    currentConnState = CONN_STATES.QUIC_INIT;
+                    packets.push(new Packet(startX, midY, endX, midY, 'quic', 'QUIC 1-RTT Hello'));
+                    totalRTTs++;
+                    outRTT.textContent = totalRTTs;
+                } else if (currentConnState === CONN_STATES.QUIC_INIT) {
+                    packets.push(new Packet(endX, midY, startX, midY, 'quic', 'QUIC Keys Verified'));
+                    connectionTime = baseLatency * 1.0; // 1 RTT total!
+                    outConnTime.innerHTML = `${Math.round(connectionTime)} <span class="text-xs font-bold text-slate-400">ms</span>`;
+                    
+                    setTimeout(() => {
+                        currentConnState = CONN_STATES.DATA_TRANSFER;
+                        badgeStatus.textContent = "DELIVERING TOYS...";
+                        badgeStatus.className = "font-bold text-cyan-400 bg-cyan-500/10 px-3 py-1 rounded-full border border-cyan-500/15";
+                        triggerResourceDownload();
+                    }, baseLatency / 2);
+                }
+            }
+        }
+
+        // Logic to dispatch files across the pipeline
+        function triggerResourceDownload() {
+            if (currentConnState !== CONN_STATES.DATA_TRANSFER) return;
+
+            const midY = canvas.height / 2;
+            const startX = 110;
+            const endX = canvas.width - 110;
+
+            if (selectedProtocol === 'http1') {
+                // HTTP/1.1: Files must be sent sequentially! One after another.
+                sendNextHTTP1File();
+            } else if (selectedProtocol === 'https') {
+                // HTTP/2: Files are multiplexed across a single pipeline simultaneously
+                streams.forEach(stream => {
+                    sendDataSegment(stream);
+                });
+            } else if (selectedProtocol === 'http3') {
+                // HTTP/3: Independent streams over UDP. Sent simultaneously
+                streams.forEach(stream => {
+                    sendDataSegment(stream);
+                });
+            }
+        }
+
+        function sendNextHTTP1File() {
+            // Find first stream that isn't fully loaded
+            const activeStream = streams.find(s => !s.completed);
+            if (activeStream) {
+                sendDataSegment(activeStream);
+            }
+        }
+
+        function sendDataSegment(stream) {
+            if (stream.completed) return;
+
+            const midY = canvas.height / 2;
+            const startX = 110;
+            const endX = canvas.width - 110;
+
+            // Compute dynamic Y offsets to visually split concurrent streams in canvas
+            let yOffset = 0;
+            if (selectedProtocol !== 'http1') {
+                // Dynamic separation tracks
+                yOffset = (stream.resource.id - 2.5) * 22; 
+            }
+
+            // Dispatch segment
+            const chunk = Math.min(50, stream.size - stream.bytesLoaded);
+            const p = new Packet(endX, midY + yOffset, startX, midY + yOffset, 'data', stream.resource, stream.resource.id);
+            p.chunkSize = chunk;
+            packets.push(p);
+        }
+
+        // Handle arrived packets inside simulation logic
+        function handlePacketArrival(p) {
+            const midY = canvas.height / 2;
+            const startX = 110;
+            const endX = canvas.width - 110;
+
+            // Triggering handshakes forward matching response packets
+            if (p.type === 'tcp' || p.type === 'tls' || p.type === 'quic') {
+                initiateNextHandshakeStep();
+                return;
+            }
+
+            // Data logic matching payload delivery to client
+            if (p.type === 'data') {
+                const stream = streams.find(s => s.resource.id === p.streamId);
+                if (stream) {
+                    // Update data loading states
+                    stream.bytesLoaded += p.chunkSize;
+                    if (stream.bytesLoaded >= stream.size) {
+                        stream.completed = true;
+                    }
+
+                    // Dispatch Acknowledgement Packet
+                    let yOffset = selectedProtocol === 'http1' ? 0 : (stream.resource.id - 2.5) * 22;
+                    packets.push(new Packet(startX, midY + yOffset, endX, midY + yOffset, 'ack', null, stream.resource.id));
+
+                    // Cascade sequential loading in HTTP1 structure
+                    if (selectedProtocol === 'http1') {
+                        if (stream.completed) {
+                            sendNextHTTP1File();
+                        } else {
+                            sendDataSegment(stream);
+                        }
+                    } else if (selectedProtocol === 'https') {
+                        // In HTTP/2, check if any connection-level Head-of-Line block is active
+                        const hasStalledPacket = packets.some(pack => pack.isDropped && pack.type === 'data');
+                        
+                        if (hasStalledPacket) {
+                            // HTTP/2 TCP HoL block: A single dropped packet stalls ALL streams from finishing
+                            stream.isStalled = true;
+                            if (Math.random() < 0.2) {
+                                holStalls++;
+                                outStalls.textContent = holStalls;
+                            }
+                        } else {
+                            stream.isStalled = false;
+                            if (!stream.completed) {
+                                sendDataSegment(stream);
+                            }
+                        }
+                    } else if (selectedProtocol === 'http3') {
+                        // HTTP/3 Independent streams: Continue fetching segments regardless of other streams
+                        if (!stream.completed) {
+                            sendDataSegment(stream);
+                        }
+                    }
+                }
+            }
+        }
+
+        // Master Animation Loop
+        function runSimulationLoop() {
+            if (!isSimulating) return;
+
+            // Update loading metrics
+            const currentDuration = Date.now() - simulationStartTime;
+            totalLoadTime = currentDuration;
+            outLoadTime.innerHTML = `${Math.round(totalLoadTime)} <span class="text-xs font-bold text-slate-400">ms</span>`;
+
+            // Draw Base Layout Elements
+            drawStaticNodes();
+
+            // Handle network paths and visual progress mapping
+            const midY = canvas.height / 2;
+
+            // Update & Draw packets
+            for (let i = packets.length - 1; i >= 0; i--) {
+                const p = packets[i];
+                p.update();
+                p.draw();
+
+                // If packet arrived safely
+                if (p.progress >= 1 && !p.isDropped) {
+                    handlePacketArrival(p);
+                    packets.splice(i, 1);
+                    continue;
+                }
+
+                // Clean up dropped packets that have "stalled"
+                if (p.isDropped && p.progress >= 0.99) {
+                    // Trigger a retransmission after timeout delay
+                    setTimeout(() => {
+                        if (!isSimulating) return;
+                        const stream = streams.find(s => s.resource.id === p.streamId);
+                        if (stream && !stream.completed) {
+                            sendDataSegment(stream);
+                        }
+                    }, 500);
+
+                    packets.splice(i, 1);
+                }
+            }
+
+            // Render interactive UI elements for active streams progress
+            drawStreamsUI();
+
+            // Render custom particles explosion
+            updateAndDrawParticles();
+
+            // Check if all resource blocks are successfully downloaded
+            const allCompleted = streams.every(s => s.completed);
+            if (allCompleted && packets.length === 0) {
+                currentConnState = CONN_STATES.COMPLETE;
+                badgeStatus.textContent = "DELIVERY SUCCESS!";
+                badgeStatus.className = "font-bold text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/15";
+                isSimulating = false;
+                
+                // Add statistical final events
+                networkEvents.push({
+                    text: "Render Complete: Page Loaded Successfully!",
+                    color: colors.emerald400,
+                    time: Date.now()
+                });
+
+                // Trigger the playful, dynamic evaluation pop-up after a slight delay
+                setTimeout(() => {
+                    showDeliveryReportCard();
+                }, 800);
+            } else {
+                animationFrameId = requestAnimationFrame(runSimulationLoop);
+            }
+        }
+
+        // Evaluation logic to generate kid-friendly report cards with real-world tech terms mapped out
+        function showDeliveryReportCard() {
+            let badge = "🛸";
+            let badgeTitle = "DRONE COMMANDER REPORT";
+            let headline = "Mission Accomplished!";
+            let story = "";
+            let badgeBg = "bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
+
+            const timeValue = Math.round(totalLoadTime);
+
+            if (selectedProtocol === 'http1') {
+                badge = "✉️";
+                badgeTitle = "HTTP/1.1 PROTOCOL EVALUATION";
+                badgeBg = "bg-amber-500/10 text-amber-400 border-amber-500/20";
+                
+                if (packetLossRate > 15) {
+                    headline = "Unencrypted Mail Jammed! 💨";
+                    story = `Your HTTP/1.1 postcards hit **${packetLossRate}% packet loss**! Because HTTP/1.1 has no security encryption layer (**No TLS**), and requests must go sequentially, dropping postcards completely locked your connection. This is why plain HTTP/1.1 takes a huge **${timeValue} ms** when the network is unstable.`;
+                } else if (baseLatency > 250) {
+                    headline = "The Sequential Penalty! 🐌";
+                    story = `With a huge network latency of **${baseLatency} ms**, HTTP/1.1 suffered heavily. Since it cannot multiplex (send multiple files together), making ${totalRTTs} sequential round trips to fetch your files piled up to a massive **${timeValue} ms** load time.`;
+                } else {
+                    headline = "Plain Text HTTP/1.1 Complete! ✉️";
+                    story = `You fetched the page using standard **HTTP/1.1 over Port 80**. The weather was calm, but because the browser was forced to load files one-by-one sequentially, it still took **${timeValue} ms** to finish. Upgrading to an encrypted, multiplexed train is highly recommended!`;
+                }
+            } 
+            else if (selectedProtocol === 'https') {
+                badge = "🚂";
+                badgeTitle = "HTTPS (HTTP/2 + TLS) EVALUATION";
+                badgeBg = "bg-cyan-500/10 text-cyan-400 border-cyan-500/20";
+
+                if (holStalls > 0) {
+                    headline = "TCP Head-of-Line Block! ⚠️";
+                    story = `A classic transport jam! Even though HTTP/2 sent all files together securely using **TLS 1.3 encryption**, the underlying **TCP layer** forced all packets to stay linked like train cars. When the wind dropped packets, the entire browser engine froze **${holStalls} times** waiting for the re-sends. This is **TCP Head-of-Line (HoL) Blocking**!`;
+                } else if (baseLatency > 250) {
+                    headline = "Secure, but Handshake Heavy! 🗺️";
+                    story = `Your files were delivered inside encrypted TLS boxes. However, because the server was far away (**${baseLatency} ms** ping), establishing the session took **${totalRTTs} back-and-forth round trips ($3\text{-RTT}$)** to complete both the TCP connection and the TLS key negotiation before any data could transfer. Total time: **${timeValue} ms**.`;
+                } else {
+                    headline = "HTTPS (HTTP/2) Delivered Safely! 🚂";
+                    story = `Splendid! In calm weather, your secure **HTTP/2 over TCP + TLS 1.3** train arrived smoothly in **${timeValue} ms**. This represents standard modern web security when network loss is low.`;
+                }
+            } 
+            else if (selectedProtocol === 'http3') {
+                badge = "🛸";
+                badgeTitle = "HTTP/3 (QUIC + UDP) EVALUATION";
+                badgeBg = "bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
+
+                if (packetLossRate > 15) {
+                    headline = "QUIC Defies Packet Loss! ⛈️🛸";
+                    story = `Phenomenal! Even with **${packetLossRate}% packet loss**, HTTP/3 completely bypassed Head-of-Line blocking. Because QUIC runs on top of **UDP**, every file was sent in its own independent stream. One packet dropping didn't freeze the other files! They rendered instantly in **${timeValue} ms** with **zero connection jams**!`;
+                } else if (baseLatency > 250) {
+                    headline = "Handshake Efficiency! ($1\text{-RTT}$) 🌌";
+                    story = `The server was far away (**${baseLatency} ms**), but HTTP/3 saved the day. Because **QUIC combines the connection setup and TLS 1.3 cryptographic key negotiation into a single round-trip ($1\text{-RTT}$)**, the data started streaming almost immediately, landing your toys in a record **${timeValue} ms**!`;
+                } else {
+                    headline = "Lightning Fast HTTP/3! ⚡";
+                    story = `Perfect mission! You triggered **HTTP/3 over UDP** in pristine network conditions. Handshakes took only a single trip, and independent streaming finished your page load in a blazing **${timeValue} ms**!`;
+                }
+            }
+
+            // Populate Modal Content
+            modalBadgeContainer.textContent = badge;
+            modalBadgeContainer.className = `w-20 h-20 rounded-2xl flex items-center justify-center text-4xl shadow-lg border-2 mb-4 animate-bounce ${badgeBg}`;
+            modalBadgeTitle.textContent = badgeTitle;
+            modalHeadline.textContent = headline;
+            modalStoryText.innerHTML = story;
+            modalStatTime.innerHTML = `${timeValue} <span class="text-xs font-normal text-slate-400">ms</span>`;
+            modalStatJams.textContent = holStalls;
+
+            // Show Modal with Animation
+            summaryModal.classList.remove('hidden');
+            setTimeout(() => {
+                summaryModal.classList.remove('opacity-0');
+                modalContainer.classList.remove('scale-95');
+            }, 50);
+        }
+
+        // Draws the progress bars representing resource segments download status
+        function drawStreamsUI() {
+            if (streams.length === 0) return;
+
+            const padding = 20;
+            const barWidth = 140;
+            const barHeight = 8;
+            const startX = 35;
+            const startY = canvas.height - 120;
+
+            ctx.save();
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+            ctx.fillRect(20, startY - 20, 250, 125);
+            ctx.strokeStyle = 'rgba(99, 102, 241, 0.3)';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(20, startY - 20, 250, 125);
+
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = 'bold 10px Fredoka';
+            ctx.fillText('🎁 YOUR TOY BOX CHECKLIST', startX, startY - 6);
+
+            streams.forEach((stream, idx) => {
+                const y = startY + (idx * 24);
+                
+                // Print Resource ID & label
+                ctx.fillStyle = '#e2e8f0';
+                ctx.font = 'bold 9px Fredoka';
+                ctx.fillText(stream.resource.type, startX, y + 7);
+
+                // Progress outline bar
+                ctx.fillStyle = 'rgba(51, 65, 85, 0.6)';
+                ctx.fillRect(startX + 105, y, barWidth, barHeight);
+
+                // Progress loaded bar filled
+                const percentage = stream.bytesLoaded / stream.size;
+                ctx.fillStyle = stream.resource.color;
+                ctx.fillRect(startX + 105, y, barWidth * percentage, barHeight);
+
+                // Draw Head-of-Line Block stalled warning icon on progress bar if applicable
+                if (selectedProtocol === 'https' && packets.some(p => p.isDropped)) {
+                    // Show block visual stall warning
+                    ctx.fillStyle = colors.red400;
+                    ctx.font = 'bold 8px Fredoka';
+                    ctx.fillText('⚠️ TCP JAM!', startX + 105 + (barWidth * percentage) + 4, y + 8);
+                } else if (stream.completed) {
+                    ctx.fillStyle = colors.emerald400;
+                    ctx.font = 'bold 9px Fredoka';
+                    ctx.fillText('✔️ got it!', startX + 105 + barWidth + 6, y + 8);
+                }
+            });
+
+            ctx.restore();
+        }
+
+        // Run core bindings
+        setupProtocolButtons();
+        drawStaticNodes();
+    </script>
+</body>
+</html>

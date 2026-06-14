@@ -1,0 +1,120 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.cyber-glow {
+  text-shadow: 0 0 10px rgba(109, 40, 217, 0.8), 0 0 20px rgba(236, 72, 153, 0.5);
+}
+
+.cyber-border {
+  border: 2px solid transparent;
+  background: linear-gradient(90deg, #0a0e27, #0a0e27) padding-box,
+              linear-gradient(90deg, #6d28d9, #ec4899) border-box;
+}
+
+.cyber-panel {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(20, 30, 60, 0.7) 100%);
+  border: 1px solid rgba(109, 40, 217, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.cyber-button {
+  @apply px-6 py-2 rounded font-semibold transition-all duration-300;
+  background: linear-gradient(135deg, #6d28d9 0%, #7c3aed 100%);
+  border: 1px solid rgba(236, 72, 153, 0.5);
+  color: white;
+}
+
+.cyber-button:hover {
+  box-shadow: 0 0 20px rgba(236, 72, 153, 0.8), inset 0 0 10px rgba(236, 72, 153, 0.3);
+  transform: translateY(-2px);
+}
+
+.cyber-button:active {
+  transform: translateY(0);
+}
+
+.code-block {
+  @apply bg-black bg-opacity-50 border border-cyber-cyan rounded p-4 font-mono text-sm;
+  color: #06b6d4;
+  overflow-x: auto;
+}
+
+.memory-cell {
+  @apply flex items-center justify-center border border-cyber-cyan rounded;
+  min-width: 40px;
+  min-height: 40px;
+  background: rgba(6, 182, 212, 0.1);
+  font-family: monospace;
+  font-size: 12px;
+}
+
+.memory-cell.modified {
+  background: rgba(236, 72, 153, 0.2);
+  border-color: #ec4899;
+  box-shadow: 0 0 10px rgba(236, 72, 153, 0.6);
+}
+
+.flag-badge {
+  @apply inline-block px-3 py-1 rounded-full text-xs font-semibold;
+  background: rgba(109, 40, 217, 0.3);
+  border: 1px solid rgba(109, 40, 217, 0.8);
+  color: #e9d5ff;
+}
+
+.flag-badge.active {
+  background: rgba(34, 197, 94, 0.3);
+  border-color: rgba(34, 197, 94, 0.8);
+  color: #bbf7d0;
+}
+
+.flag-badge.inactive {
+  background: rgba(239, 68, 68, 0.3);
+  border-color: rgba(239, 68, 68, 0.8);
+  color: #fecaca;
+}
+
+.quiz-option {
+  @apply p-4 rounded cursor-pointer border-2 transition-all duration-300;
+  border-color: rgba(109, 40, 217, 0.3);
+  background: rgba(15, 23, 42, 0.5);
+}
+
+.quiz-option:hover {
+  border-color: rgba(109, 40, 217, 0.8);
+  background: rgba(109, 40, 217, 0.1);
+}
+
+.quiz-option.selected {
+  border-color: #6d28d9;
+  background: rgba(109, 40, 217, 0.2);
+}
+
+.quiz-option.correct {
+  border-color: #22c55e;
+  background: rgba(34, 197, 94, 0.2);
+}
+
+.quiz-option.incorrect {
+  border-color: #ef4444;
+  background: rgba(239, 68, 68, 0.2);
+}

@@ -52,3 +52,8 @@ nslookup and dig. Both query DNS, but dig (historically a backronym for "Domain 
 2. EvilNginx(https://github.com/kgretzky/evilginx2): is a tool designed for advanced phising campaigns that bypass multi-factor authentication (MFA). It acts as a reverse between victims and legitimate sites, capturing credentials and session tokens in real time.
 
 3. The Social Engineering ToolKit(https://github.com/trustedsec/social-engineer-toolkit):contains many tools. Still, some of the important ones for phisong  are the ability to create spear-phising attacks and deploy fake versions of common websites to trick victims into entering their credentials. In task 6, we will get hands-on experience with this tool.
+
+
+# Crytography
+
+Cryptii website(https://cryptii.com/pipes/caesar-cipher/) : You can experiment with different ciphering methods like Caesar cipher shifts,punny codes, morse codes, etc using the interactive tool at the Cryptii website. It lets you tweak the rotation and instantly see how the text transforms.

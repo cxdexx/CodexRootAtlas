@@ -1,4 +1,4 @@
-# Useful links
+# Learning
 
  PortSwigger Web Security Academy: https://portswigger.net/web-security
  
@@ -6,7 +6,7 @@
  
  HackTheBox: https://hackthebox.com
 
- https://www.exploit-db.com/---Each confirmed vulnerability is assigned a unique identifier in the format CVE-YEAR-NUMBER, such as CVE-2025-55182. If the vulnerability is impactful enough, it may even get a moniker. You may have heard of vulnerabilities such as Heartbleed, React2Shell, and Log4Shell. These vulnerabilities are given a score (CVSS) based on a variety of factors, such as:
+ https://www.exploit-db.com: Each confirmed vulnerability is assigned a unique identifier in the format CVE-YEAR-NUMBER, such as CVE-2025-55182. If the vulnerability is impactful enough, it may even get a moniker. You may have heard of vulnerabilities such as Heartbleed, React2Shell, and Log4Shell. These vulnerabilities are given a score (CVSS) based on a variety of factors, such as:
 
     Impact - What damage can this vulnerability lead to?
     Complexity - Is the vulnerability easy to exploit or not? 
@@ -23,7 +23,7 @@
 
  Subnetting By Network Chunk: https://www.youtube.com/watch?v=oZGZRtaGyG8&start=541
 
- OSINT : 
+ # OSINT : 
         
         https://exiftool.org/exiftool_pod.html
         https://www.shodan.io/ 
@@ -45,3 +45,10 @@ nslookup and dig. Both query DNS, but dig (historically a backronym for "Domain 
 
  Certificate Transparency Logs (crt.sh): is a public logging framework (mandatory since approximately 2015) that records every SSL/TLS certificate issued by participating Certificate Authorities. Each certificate contains a Subject Alternative Name (SAN) field listing the domains and subdomains it covers. By searching these logs, you can discover subdomains without sending any traffic to the target.
 
+# Phishing
+
+1. Gophish (https://github.com/gophish/gophish): is a web-based framework that makes setting up phising campaigns more straightforward. It allows you to store your SMTP server settings for sending emails and has a web-based tool for creating email templates using a simple WYSIWYG (What You See Is What You Get) editor. You can also schedule emails and have an analytics dashboard that shows open and click rates. 
+
+2. EvilNginx(https://github.com/kgretzky/evilginx2): is a tool designed for advanced phising campaigns that bypass multi-factor authentication (MFA). It acts as a reverse between victims and legitimate sites, capturing credentials and session tokens in real time.
+
+3. The Social Engineering ToolKit(https://github.com/trustedsec/social-engineer-toolkit):contains many tools. Still, some of the important ones for phisong  are the ability to create spear-phising attacks and deploy fake versions of common websites to trick victims into entering their credentials. In task 6, we will get hands-on experience with this tool.

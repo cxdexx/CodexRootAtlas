@@ -57,3 +57,8 @@ nslookup and dig. Both query DNS, but dig (historically a backronym for "Domain 
 # Crytography
 
 Cryptii website(https://cryptii.com/pipes/caesar-cipher/) : You can experiment with different ciphering methods like Caesar cipher shifts,punny codes, morse codes, etc using the interactive tool at the Cryptii website. It lets you tweak the rotation and instantly see how the text transforms.
+
+https://robertheaton.com/2014/03/27/how-does-https-actually-work/: u can find a lot more detail on how HTTPS (one example where you need to exchange keys) really works from this excellent blog post.
+
+There are some excellent tools for defeating challenges in CTFs, and my personal favorite is https://github.com/Ganapati/RsaCtfTool which has worked very well for me. I’ve also had some success with https://github.com/ius/rsatool.
+

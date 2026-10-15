@@ -66,6 +66,10 @@ There are some excellent tools for defeating challenges in CTFs, and my personal
 
 SecLists is a good starting point: https://github.com/danielmiessler/SecLists. It has username and name lists you can use to build email candidates; its Fuzzing/email-top-100-domains.txt file is a list of email domains (like gmail.com), not full addresses. For an authorized test of your own app, use test accounts or generate addresses from names in your test environment rather than using a real-person email dump.
 
+# Wayback URLs dump
+
+To dump all of the links that are saved in Wayback Machine, we can use the tool called https://github.com/tomnomnom/waybackurls . Hosted in GitHub
+
 
 
 
